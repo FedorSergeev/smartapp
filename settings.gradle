@@ -1,0 +1,3 @@
+rootProject.name = 'smartapp'
+include 'kafka-adapter'
+include 'application'
