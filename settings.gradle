@@ -1,3 +1,4 @@
 rootProject.name = 'smartapp'
 include 'kafka-adapter'
+include 'core'
 include 'application'

@@ -1,0 +1,30 @@
+plugins {
+    id 'maven-publish'
+    id 'org.springframework.boot' version '2.5.2'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+    id 'jacoco'
+}
+
+group 'ru.smartapp'
+version '1.0-SNAPSHOT'
+description = "smartapp-finite-state-machine"
+
+sourceCompatibility = 8
+targetCompatibility = 8
+
+bootJar.enabled = false
+jar.enabled = true
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+test {
+    useJUnitPlatform()
+}
