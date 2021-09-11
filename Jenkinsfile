@@ -6,7 +6,7 @@ pipeline {
             stages {
                  stage('Checkout') {
                         steps {
-                        git branch: 'feature/kafka-adapter',
+                        git branch: 'feature/core',
                             url: 'https://github.com/FedorSergeev/smartapp.git'
                             }
                 }
