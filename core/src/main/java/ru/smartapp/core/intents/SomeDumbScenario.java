@@ -18,9 +18,10 @@ public class SomeDumbScenario implements Scenario {
     public JsonNode run(ScenarioContext scenarioContext) {
         try {
             JsonNode jsonNode = mapper.readTree("{key, value}");
-            String jsonString = "{\"pronounceText\": \"darova\",\"items\": [{\"bubble\": {\"text\": \"darova\",\"markdown\": True}}]}";
+            String jsonString = "{\"message_name\": \"ANSWER_TO_USER\", \"payload\": {\"pronounceText\": \"darova\", \"items\": [{\"bubble\": {\"text\": \"darova\", \"markdown\": true}}]}}";
             ObjectMapper mapper = new ObjectMapper();
-            return mapper.readTree(jsonString);
+            JsonNode answer = mapper.readTree(jsonString);
+            return answer;
         } catch (JsonProcessingException e) {
             log.error(format("Failed to convert response to JsonNode %s", e));
         }
