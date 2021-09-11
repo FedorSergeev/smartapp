@@ -1,10 +1,10 @@
 package ru.smartapp.core.intents;
 
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
 import ru.smartapp.core.ScenarioContext;
 
 public interface Scenario {
 
-    JSONObject run(ScenarioContext scenarioContext);
+    JsonNode run(ScenarioContext scenarioContext);
 
 }

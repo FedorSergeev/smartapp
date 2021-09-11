@@ -1,5 +1,6 @@
 package ru.smartapp.core;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
@@ -20,8 +21,14 @@ public class ScenarioExecutor {
         this.scenariosMapping = scenariosMapping;
     }
 
-    public JSONObject run(JSONObject someInfo) {
-        String scenarioId = someInfo.has("intent") ? someInfo.getString("intent") : "";
+    /**
+     * todo javadoc
+     *
+     * @param someInfo
+     * @return
+     */
+    public JsonNode run(JsonNode someInfo) {
+        String scenarioId = someInfo.has("intent") ? someInfo.get("intent").asText() : "";
         Class<Scenario> scenarioClass = scenariosMapping.get(scenarioId);
         if (scenarioClass == null) {
             //TODO: send message NothingFound
@@ -30,7 +37,7 @@ public class ScenarioExecutor {
         }
         ScenarioContext scenarioContext = new ScenarioContext(someInfo);
         Scenario scenario = buildScenario(scenarioClass, scenarioContext);
-        JSONObject answer = scenario.run(scenarioContext);
+        JsonNode answer = scenario.run(scenarioContext);
         return answer;
     }
 

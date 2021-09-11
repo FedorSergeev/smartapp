@@ -1,12 +1,12 @@
 package ru.smartapp.core;
 
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class ScenarioContext {
     private String intent;
     private String stateId;
 
-    public ScenarioContext(JSONObject dbInfo) {
+    public ScenarioContext(JsonNode dbInfo) {
         //TODO: build context from db info
     }
 }
