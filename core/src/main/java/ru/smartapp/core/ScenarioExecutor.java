@@ -1,6 +1,7 @@
 package ru.smartapp.core;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.Nullable;
@@ -11,6 +12,7 @@ import ru.smartapp.core.intents.Scenario;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
 
 @Service("scenarioExecutor")
 public class ScenarioExecutor {
@@ -29,7 +31,11 @@ public class ScenarioExecutor {
      * @return
      */
     public JsonNode run(JsonNode someInfo) {
-        String scenarioId = someInfo.has("intent") ? someInfo.get("intent").asText() : "";
+        String scenarioId = Optional.ofNullable(someInfo)
+                .map(info -> info.get("payload"))
+                .map(payload -> payload.get("intent"))
+                .map(JsonNode::asText)
+                .orElse(StringUtils.EMPTY);
         Class<? extends Scenario> scenarioClass = scenariosMapping.get(scenarioId);
         if (scenarioClass == null) {
             log.error(String.format("There is no scenario with id %s", scenarioId));
