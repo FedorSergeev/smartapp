@@ -42,7 +42,7 @@ public class ScenarioExecutor {
             return new NothingFound().run();
         }
         ScenarioContext scenarioContext = new ScenarioContext(someInfo);
-        Scenario scenario = buildScenario(scenarioClass, scenarioContext);
+        Scenario scenario = buildScenario(scenarioClass);
         if (scenario == null) {
             return new NothingFound().run();
         }
@@ -56,10 +56,10 @@ public class ScenarioExecutor {
      * @param someInfo
      * @return
      */
-    private Scenario buildScenario(Class<? extends Scenario> scenarioClass, ScenarioContext scenarioContext) {
+    private Scenario buildScenario(Class<? extends Scenario> scenarioClass) {
         try {
-            Constructor<?> ctor = scenarioClass.getConstructor(ScenarioContext.class);
-            return (Scenario) ctor.newInstance(new Object[]{scenarioContext});
+            Constructor<?> ctor = scenarioClass.getConstructor();
+            return (Scenario) ctor.newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             log.error("Error on init scenario class", e);
         }

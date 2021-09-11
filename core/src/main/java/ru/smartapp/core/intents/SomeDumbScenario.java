@@ -17,10 +17,9 @@ public class SomeDumbScenario implements Scenario {
     @Override
     public JsonNode run(ScenarioContext scenarioContext) {
         try {
-            JsonNode jsonNode = mapper.readTree("{key, value}");
             String jsonString = "{\"message_name\": \"ANSWER_TO_USER\", \"payload\": {\"pronounceText\": \"darova\", \"items\": [{\"bubble\": {\"text\": \"darova\", \"markdown\": true}}]}}";
-            ObjectMapper mapper = new ObjectMapper();
             JsonNode answer = mapper.readTree(jsonString);
+            log.info(format("Outgoing from scenario %s: %s", getClass().getTypeName(), answer.toString()));
             return answer;
         } catch (JsonProcessingException e) {
             log.error(format("Failed to convert response to JsonNode %s", e));
