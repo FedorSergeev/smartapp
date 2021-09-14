@@ -6,11 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import static java.lang.String.format;
 
@@ -22,7 +22,7 @@ public class SomeDumbScenario implements Scenario {
     @Override
     public JsonNode run(JsonNode incomingMessage) {
         try {
-            File file = ResourceUtils.getFile("classpath:response.json");
+            File file = new File(getClass().getResource("/response.json").toURI());
             ObjectNode answer = (ObjectNode) mapper.readTree(file);
             answer.set("sessionId", incomingMessage.get("sessionId"));
             answer.set("messageId", incomingMessage.get("messageId"));
@@ -33,7 +33,7 @@ public class SomeDumbScenario implements Scenario {
             log.error(format("Failed to convert response to JsonNode %s", e));
         } catch (FileNotFoundException e) {
             log.error(String.format("Ti loh, net faila %s", "response.json"), e);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             log.error("Hmm", e);
         }
         // 192.168.10.29 8087
