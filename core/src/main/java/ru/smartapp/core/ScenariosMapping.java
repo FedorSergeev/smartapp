@@ -24,7 +24,7 @@ public class ScenariosMapping {
         return scenarioMap.getOrDefault(scenarioId, null);
     }
 
-    public void put(@NotNull String scenarioId, @NotNull Class<Scenario> scenarioClass) {
+    public void put(@NotNull String scenarioId, @NotNull Class<? extends Scenario> scenarioClass) {
         if (scenarioMap.containsKey(scenarioId)) {
             throw new RuntimeException(String.format("Duplicate scenario id: %s", scenarioId));
         }

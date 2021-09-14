@@ -27,11 +27,11 @@ public class ScenarioExecutor {
     /**
      * todo javadoc
      *
-     * @param someInfo
+     * @param incomingMessage
      * @return
      */
-    public JsonNode run(JsonNode someInfo) {
-        String scenarioId = Optional.ofNullable(someInfo)
+    public JsonNode run(JsonNode incomingMessage) {
+        String scenarioId = Optional.ofNullable(incomingMessage)
                 .map(info -> info.get("payload"))
                 .map(payload -> payload.get("intent"))
                 .map(JsonNode::asText)
@@ -41,12 +41,11 @@ public class ScenarioExecutor {
             log.error(String.format("There is no scenario with id %s", scenarioId));
             return new NothingFound().run();
         }
-        ScenarioContext scenarioContext = new ScenarioContext(someInfo);
         Scenario scenario = buildScenario(scenarioClass);
         if (scenario == null) {
             return new NothingFound().run();
         }
-        return scenario.run(scenarioContext);
+        return scenario.run(incomingMessage);
     }
 
     @Nullable
