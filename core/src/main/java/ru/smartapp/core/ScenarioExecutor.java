@@ -1,5 +1,6 @@
 package ru.smartapp.core;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -7,6 +8,8 @@ import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.smartapp.core.common.IncomingMessageFactory;
+import ru.smartapp.core.common.dto.incoming.IncomingMessage;
 import ru.smartapp.core.defaultanswers.NothingFound;
 import ru.smartapp.core.intents.Scenario;
 
@@ -18,19 +21,30 @@ import java.util.Optional;
 public class ScenarioExecutor {
     private final Log log = LogFactory.getLog(getClass());
     private ScenariosMapping scenariosMapping;
+    private IncomingMessageFactory incomingMessageFactory;
 
     @Autowired
-    public ScenarioExecutor(ScenariosMapping scenariosMapping) {
+    public ScenarioExecutor(
+            ScenariosMapping scenariosMapping,
+            IncomingMessageFactory incomingMessageFactory
+    ) {
         this.scenariosMapping = scenariosMapping;
+        this.incomingMessageFactory = incomingMessageFactory;
     }
 
     /**
-     * todo javadoc
+     * Method receives incoming message from adapter,
+     * get value from field 'intent' and calls corresponding {@link Scenario} by value
      *
-     * @param incomingMessage
-     * @return
+     * @param incomingMessage - message received from adapter
+     * @return {@link Scenario}'s answer
      */
-    public JsonNode run(JsonNode incomingMessage) {
+    public JsonNode run(JsonNode incomingMessage) throws JsonProcessingException {
+        if (!incomingMessageFactory.validateIncomingMessage(incomingMessage)) {
+            log.error("Got invalid incoming message");
+            return new NothingFound().run();
+        }
+        IncomingMessage message = incomingMessageFactory.getIncomingMessage(incomingMessage);
         String scenarioId = Optional.ofNullable(incomingMessage)
                 .map(info -> info.get("payload"))
                 .map(payload -> payload.get("intent"))

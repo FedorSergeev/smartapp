@@ -15,6 +15,7 @@ import java.io.InputStream;
 
 import static java.lang.String.format;
 
+@ScenarioService(id="run_app")
 public class SomeDumbScenario implements Scenario {
 
     public static final String RESPONSE_JSON = "response.json";
