@@ -1,0 +1,36 @@
+{
+  "messageId": 250108518,
+  "sessionId": "f2907362-b5ae-3561-85bd-7c7f745cddc4",
+  "messageName": "MESSAGE_TO_SKILL",
+  "payload": {
+    "device": {
+      "platformType": "android",
+      "platformVersion": "1.0.2",
+      "surface": "SBOL",
+      "surfaceVersion": "1.0.2",
+      "features": {
+        "appTypes": [
+          "DIALOG",
+          "WEB_APP"
+        ]
+      },
+      "capabilities": {
+        "screen": {
+          "available": true
+        },
+        "mic": {
+          "available": true
+        },
+        "speak": {
+          "available": true
+        }
+      },
+      "additionalInfo": {}
+    }
+  },
+  "uuid": {
+    "userId": "5807F5ED-B0DD-41FD-82C6-68E8095D7FB3",
+    "sub": "KPDNKg93+g8xwZChfyq5u0N903kIi+4L9bIqe2C67RG2U56rBophZq6aEIqoWDLTh9wII3+NumtOYmToAMu/ocZHl4a7h2jeGllUtpDgA0slgsCu5BAiH58OXGeFwZPef/BW8gDIfZCMGX33BIEq63KwfwMsyhQhLeXew4JscDQ=",
+    "userChannel": "COMPANION_B2C"
+  }
+}
