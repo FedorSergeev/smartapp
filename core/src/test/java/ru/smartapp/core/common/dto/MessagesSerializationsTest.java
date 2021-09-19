@@ -2,6 +2,7 @@ package ru.smartapp.core.common.dto;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.ResourceUtils;
 import ru.smartapp.core.common.dto.incoming.CloseAppDTO;
@@ -9,8 +10,11 @@ import ru.smartapp.core.common.dto.incoming.MessageToSkillDTO;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MessagesSerializationsTest {
 
@@ -19,10 +23,8 @@ public class MessagesSerializationsTest {
         File file = ResourceUtils.getFile("classpath:messageToSkill.json");
         ObjectMapper mapper = new ObjectMapper();
         JsonNode requestJson = mapper.readTree(file);
-        MessageToSkillDTO messageToSkillDTO = mapper.readValue(file, MessageToSkillDTO.class);
-
-        assertEquals(requestJson.get("messageId").asLong(), messageToSkillDTO.getMessageId());
-        //assertEquals(requestJson, mapper.readTree(mapper.writeValueAsString(messageToSkillDTO)));
+        JsonNode actual = mapper.readTree(mapper.writeValueAsString(mapper.readValue(file, MessageToSkillDTO.class)));
+        assertEqualsJsonNodes(requestJson, actual);
     }
 
     @Test
@@ -30,9 +32,21 @@ public class MessagesSerializationsTest {
         File file = ResourceUtils.getFile("classpath:closeApp.json");
         ObjectMapper mapper = new ObjectMapper();
         JsonNode requestJson = mapper.readTree(file);
-        CloseAppDTO closeAppDTO = mapper.readValue(file, CloseAppDTO.class);
+        JsonNode actual = mapper.readTree(mapper.writeValueAsString(mapper.readValue(file, CloseAppDTO.class)));
+        assertEqualsJsonNodes(requestJson, actual);
+    }
 
-        assertEquals(requestJson, mapper.readTree(mapper.writeValueAsString(closeAppDTO)));
+    private void assertEqualsJsonNodes(JsonNode one, JsonNode two) {
+        Iterator<Map.Entry<String, JsonNode>> iterator = one.fields();
+        while (iterator.hasNext()) {
+            Map.Entry<String, JsonNode> node = iterator.next();
+            assertTrue(two.has(node.getKey()));
+            if (node.getValue().getNodeType().equals(JsonNodeType.OBJECT)) {
+                assertEqualsJsonNodes(node.getValue(), two.get(node.getKey()));
+            } else {
+                assertEquals(node.getValue(), two.get(node.getKey()));
+            }
+        }
     }
 
 }
