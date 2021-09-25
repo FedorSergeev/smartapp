@@ -7,6 +7,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import ru.smartapp.core.annotations.ScenarioClass;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,15 +18,23 @@ import java.io.InputStream;
 
 import static java.lang.String.format;
 
-@ScenarioService(id="run_app")
+@Service
+@ScenarioClass({"run_app"})
 public class SomeDumbScenario implements Scenario {
 
     public static final String RESPONSE_JSON = "response.json";
     private final Log log = LogFactory.getLog(getClass());
-    private final ObjectMapper mapper = new ObjectMapper();
+
+    private final ObjectMapper mapper;
+
+    @Autowired
+    public SomeDumbScenario(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
 
     @Override
     public JsonNode run(JsonNode incomingMessage) {
+//        TODO: user answer message builder, not resource file
         InputStream resource = getClass().getClassLoader().getResourceAsStream(RESPONSE_JSON);
         if (resource != null) {
             try {
@@ -35,11 +46,11 @@ public class SomeDumbScenario implements Scenario {
                 answer.set("uuid", incomingMessage.get("uuid"));
                 log.info(format("Outgoing from scenario %s: %s", getClass().getTypeName(), answer));
                 return answer;
-            } catch(JsonProcessingException e){
+            } catch (JsonProcessingException e) {
                 log.error(format("Failed to convert response to JsonNode %s", e));
-            } catch(FileNotFoundException e){
+            } catch (FileNotFoundException e) {
                 log.error(format("Ti loh, net faila %s", RESPONSE_JSON), e);
-            } catch(IOException e){
+            } catch (IOException e) {
                 log.error("Hmm", e);
             }
         }

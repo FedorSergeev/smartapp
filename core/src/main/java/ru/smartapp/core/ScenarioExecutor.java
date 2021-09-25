@@ -7,29 +7,31 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import ru.smartapp.core.common.IncomingMessageFactory;
 import ru.smartapp.core.common.dto.incoming.IncomingMessage;
 import ru.smartapp.core.defaultanswers.NothingFound;
 import ru.smartapp.core.intents.Scenario;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
-@Service("scenarioExecutor")
+@Service
 public class ScenarioExecutor {
     private final Log log = LogFactory.getLog(getClass());
-    private ScenariosMapping scenariosMapping;
+    private ApplicationContext context;
+    private ScenariosMap scenarioMap;
     private IncomingMessageFactory incomingMessageFactory;
 
     @Autowired
     public ScenarioExecutor(
-            ScenariosMapping scenariosMapping,
+            ApplicationContext context,
+            ScenariosMap scenarioMap,
             IncomingMessageFactory incomingMessageFactory
     ) {
-        this.scenariosMapping = scenariosMapping;
+        this.scenarioMap = scenarioMap;
         this.incomingMessageFactory = incomingMessageFactory;
+        this.context = context;
     }
 
     /**
@@ -39,7 +41,8 @@ public class ScenarioExecutor {
      * @param incomingMessage - message received from adapter
      * @return {@link Scenario}'s answer
      */
-    public JsonNode run(JsonNode incomingMessage) throws JsonProcessingException {
+    public JsonNode run(@Nullable JsonNode incomingMessage) throws JsonProcessingException {
+//        TODO: fail fast or fail soft?
         if (!incomingMessageFactory.validateIncomingMessage(incomingMessage)) {
             log.error("Got invalid incoming message");
             return new NothingFound().run();
@@ -50,33 +53,12 @@ public class ScenarioExecutor {
                 .map(payload -> payload.get("intent"))
                 .map(JsonNode::asText)
                 .orElse(StringUtils.EMPTY);
-        Class<? extends Scenario> scenarioClass = scenariosMapping.get(scenarioId);
+        Class<? extends Scenario> scenarioClass = scenarioMap.get(scenarioId);
         if (scenarioClass == null) {
             log.error(String.format("There is no scenario with id %s", scenarioId));
             return new NothingFound().run();
         }
-        Scenario scenario = buildScenario(scenarioClass);
-        if (scenario == null) {
-            return new NothingFound().run();
-        }
+        Scenario scenario = context.getBean(scenarioClass);
         return scenario.run(incomingMessage);
     }
-
-    @Nullable
-    /**
-     * todo javadoc
-     *
-     * @param someInfo
-     * @return
-     */
-    private Scenario buildScenario(Class<? extends Scenario> scenarioClass) {
-        try {
-            Constructor<?> ctor = scenarioClass.getConstructor();
-            return (Scenario) ctor.newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            log.error("Error on init scenario class", e);
-        }
-        return null;
-    }
-
 }

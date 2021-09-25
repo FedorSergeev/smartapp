@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import ru.smartapp.core.common.dto.incoming.CloseAppDTO;
 import ru.smartapp.core.common.dto.incoming.IncomingMessage;
@@ -28,7 +30,7 @@ public class IncomingMessageFactory {
         put(MessageName.CLOSE_APP, CloseAppDTO.class);
     }};
 
-    public Boolean validateIncomingMessage(JsonNode incomingMessage) {
+    public Boolean validateIncomingMessage(@Nullable JsonNode incomingMessage) {
         if (incomingMessage == null) {
             log.error("Incoming message must not be null");
             return false;
@@ -55,7 +57,7 @@ public class IncomingMessageFactory {
         return true;
     }
 
-    public IncomingMessage getIncomingMessage(JsonNode incomingMessage) throws JsonProcessingException {
+    public IncomingMessage getIncomingMessage(@NotNull JsonNode incomingMessage) throws JsonProcessingException {
         MessageName messageName = MessageName.valueOf(incomingMessage.get("messageName").asText());
         return mapper.treeToValue(incomingMessage, incomingMessageMap.get(messageName));
     }

@@ -3,21 +3,16 @@ package ru.smartapp.core;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
+import ru.smartapp.core.annotations.ScenarioClassMap;
 import ru.smartapp.core.intents.Scenario;
-import ru.smartapp.core.intents.SomeDumbScenario;
 
-import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
-@Service("scenarioMapping")
-public class ScenariosMapping {
+@Service
+@ScenarioClassMap
+public class ScenariosMap {
     private Map<String, Class<? extends Scenario>> scenarioMap = new HashMap<>();
-
-    @PostConstruct
-    private void postConstruct() {
-        scenarioMap.put("run_app", SomeDumbScenario.class);
-    }
 
     @Nullable
     public Class<? extends Scenario> get(String scenarioId) {
