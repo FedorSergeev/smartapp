@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import ru.smartapp.core.annotations.ScenarioClassMap;
-import ru.smartapp.core.intents.Scenario;
+import ru.smartapp.core.scenarios.Scenario;
 
 import java.util.HashMap;
 import java.util.Map;

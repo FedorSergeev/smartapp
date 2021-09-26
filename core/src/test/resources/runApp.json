@@ -1,7 +1,7 @@
 {
   "messageId": 250108518,
   "sessionId": "f2907362-b5ae-3561-85bd-7c7f745cddc4",
-  "messageName": "MESSAGE_TO_SKILL",
+  "messageName": "RUN_APP",
   "payload": {
     "device": {
       "platformType": "android",

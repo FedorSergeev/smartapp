@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
-import ru.smartapp.core.ScenarioExecutor;
+import ru.smartapp.core.handlers.IncomingMessageHandler;
 
 import static java.lang.String.format;
 
@@ -27,16 +27,16 @@ public class KafkaController {
     private final Log log = LogFactory.getLog(getClass());
 
     private final ObjectMapper mapper;
-    private final ScenarioExecutor scenarioExecutor;
+    private final IncomingMessageHandler handler;
 
-    public KafkaController(ObjectMapper mapper, ScenarioExecutor scenarioExecutor) {
+    public KafkaController(ObjectMapper mapper, IncomingMessageHandler handler) {
         this.mapper = mapper;
-        this.scenarioExecutor = scenarioExecutor;
+        this.handler = handler;
     }
 
     @PostMapping
     public Mono<ResponseEntity<JsonNode>> processNlpRequest(@RequestBody String string) throws JsonProcessingException {
         log.info(format("Incoming from REST webhook: %s", string));
-        return Mono.just(ResponseEntity.ok(scenarioExecutor.run(mapper.readTree(string))));
+        return Mono.just(ResponseEntity.ok(handler.handle(mapper.readTree(string))));
     }
 }

@@ -1,4 +1,4 @@
-package ru.smartapp.core.intents;
+package ru.smartapp.core.scenarios;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import ru.smartapp.core.annotations.ScenarioClass;
+import ru.smartapp.core.common.dto.incoming.AbstractIncomingMessage;
+import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
+import ru.smartapp.core.common.dto.outgoing.AnswerToUserDTO;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -32,6 +35,13 @@ public class SomeDumbScenario implements Scenario {
     }
 
     @Override
+    public <T extends AbstractOutgoingMessage> T run(AbstractIncomingMessage incomingMessage) throws JsonProcessingException {
+        JsonNode jsonNode = mapper.readTree(mapper.writeValueAsString(incomingMessage));
+        JsonNode answer = run(jsonNode);
+        AnswerToUserDTO answerToUserDTO = mapper.readValue(mapper.writeValueAsString(answer), AnswerToUserDTO.class);
+        return (T) answerToUserDTO;
+    }
+
     public JsonNode run(JsonNode incomingMessage) {
 //        TODO: user answer message builder, not resource file
         try {
@@ -52,5 +62,4 @@ public class SomeDumbScenario implements Scenario {
         // todo дефолтный ответ с ошибкой
         return null;
     }
-
 }
