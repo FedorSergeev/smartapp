@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
-import ru.smartapp.core.handlers.IncomingMessageHandler;
+import ru.smartapp.core.handlers.IncomingMessageRouter;
 
 import static java.lang.String.format;
 
@@ -27,9 +27,9 @@ public class KafkaController {
     private final Log log = LogFactory.getLog(getClass());
 
     private final ObjectMapper mapper;
-    private final IncomingMessageHandler handler;
+    private final IncomingMessageRouter handler;
 
-    public KafkaController(ObjectMapper mapper, IncomingMessageHandler handler) {
+    public KafkaController(ObjectMapper mapper, IncomingMessageRouter handler) {
         this.mapper = mapper;
         this.handler = handler;
     }

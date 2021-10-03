@@ -10,43 +10,48 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.smartapp.core.common.MessageName;
-import ru.smartapp.core.common.dto.incoming.MessageToSkillDTO;
+import ru.smartapp.core.common.dto.incoming.AbstractIncomingMessage;
 import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
-import ru.smartapp.core.defaultanswers.NothingFoundMessageBuilder;
+import ru.smartapp.core.defaultanswers.ErrorMessageBuilder;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
-public class IncomingMessageHandler {
-    private Log log = LogFactory.getLog(getClass());
-    // TODO
-    private Map<MessageName, MessageHandler> incomingMessageMap;
-    private ObjectMapper mapper;
-    private MessageToSkillHandler<AbstractOutgoingMessage> messageToSkillHandler;
+public class IncomingMessageRouter {
+    private final Log log = LogFactory.getLog(getClass());
+    private final Map<MessageName, MessageHandler<? extends AbstractIncomingMessage, ? extends AbstractOutgoingMessage>> incomingMessageMap;
+    private final ObjectMapper mapper;
+    private final MessageToSkillHandler<AbstractOutgoingMessage> messageToSkillHandler;
+    private final CloseAppHandler<AbstractOutgoingMessage> closeAppHandler;
+    private final RunAppHandler<AbstractOutgoingMessage> runAppHandler;
+    private final ServerActionHandler<AbstractOutgoingMessage> serverActionHandler;
 
     @Autowired
-    public IncomingMessageHandler(
+    public IncomingMessageRouter(
             ObjectMapper mapper,
-            MessageToSkillHandler<AbstractOutgoingMessage> messageToSkillHandler
+            MessageToSkillHandler<AbstractOutgoingMessage> messageToSkillHandler,
+            CloseAppHandler<AbstractOutgoingMessage> closeAppHandler,
+            RunAppHandler<AbstractOutgoingMessage> runAppHandler,
+            ServerActionHandler<AbstractOutgoingMessage> serverActionHandler
     ) {
         this.mapper = mapper;
         this.messageToSkillHandler = messageToSkillHandler;
+        this.closeAppHandler = closeAppHandler;
+        this.runAppHandler = runAppHandler;
+        this.serverActionHandler = serverActionHandler;
+        incomingMessageMap = new HashMap<>();
     }
 
     @PostConstruct
     private void postConstruct() {
-        incomingMessageMap =
-                // TODO
-                new HashMap<MessageName, MessageHandler>() {{
-                    put(MessageName.MESSAGE_TO_SKILL, messageToSkillHandler);
-                    // TODO
-//                    put(MessageName.CLOSE_APP, CloseAppDTO.class);
-//                    put(MessageName.SERVER_ACTION, ServerActionDTO.class);
-//                    put(MessageName.RUN_APP, RunAppDTO.class);
-                }};
+        incomingMessageMap.put(MessageName.MESSAGE_TO_SKILL, messageToSkillHandler);
+        incomingMessageMap.put(MessageName.CLOSE_APP, closeAppHandler);
+        incomingMessageMap.put(MessageName.RUN_APP, runAppHandler);
+        incomingMessageMap.put(MessageName.SERVER_ACTION, serverActionHandler);
     }
 
     public Boolean validateIncomingMessage(@Nullable JsonNode incomingMessage) {
@@ -76,25 +81,25 @@ public class IncomingMessageHandler {
         return true;
     }
 
-    // TODO
-    public MessageHandler getIncomingMessageHandler(@NotNull JsonNode incomingMessage) {
+    public MessageHandler<? extends AbstractIncomingMessage, ? extends AbstractOutgoingMessage>
+    getIncomingMessageHandler(@NotNull JsonNode incomingMessage) {
         MessageName messageName = MessageName.valueOf(incomingMessage.get("messageName").asText());
         return incomingMessageMap.get(messageName);
     }
 
+    @Nullable
     public JsonNode handle(JsonNode incomingMessage) {
         JsonNode result = null;
         try {
             if (!validateIncomingMessage(incomingMessage)) {
                 log.error("Got invalid incoming message");
-                return mapper.readTree(mapper.writeValueAsString(new NothingFoundMessageBuilder().run()));
+                return mapper.readTree(mapper.writeValueAsString(new ErrorMessageBuilder().run()));
             }
-            // TODO
-            MessageHandler handler = getIncomingMessageHandler(incomingMessage);
-            MessageToSkillDTO message = mapper.readValue(mapper.writeValueAsString(incomingMessage), MessageToSkillDTO.class);
-            // TODO
-            AbstractOutgoingMessage answer = handler.handle(message);
-            result = mapper.readTree(mapper.writeValueAsString(answer));
+            Optional<? extends AbstractOutgoingMessage> optional = getIncomingMessageHandler(incomingMessage).handle(incomingMessage);
+            if (optional.isPresent()) {
+                AbstractOutgoingMessage answer = optional.get();
+                result = mapper.readTree(mapper.writeValueAsString(answer));
+            }
         } catch (JsonProcessingException e) {
             log.error("Json cast exception", e);
         }

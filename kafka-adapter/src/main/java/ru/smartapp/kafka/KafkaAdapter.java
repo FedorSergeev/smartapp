@@ -11,7 +11,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.kafka.receiver.ReceiverRecord;
-import ru.smartapp.core.handlers.IncomingMessageHandler;
+import ru.smartapp.core.handlers.IncomingMessageRouter;
 
 /**
  * Consumes and produces messages from Kafka
@@ -25,11 +25,11 @@ public class KafkaAdapter {
     private final Log log = LogFactory.getLog(getClass());
 
     private final Flux<ReceiverRecord<String, String>> reactiveKafkaReceiver;
-    private final IncomingMessageHandler handler;
-    private final ObjectMapper mappper = new ObjectMapper();
+    private final IncomingMessageRouter handler;
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public KafkaAdapter(Flux<ReceiverRecord<String, String>> reactiveKafkaReceiver,
-                        IncomingMessageHandler handler) {
+                        IncomingMessageRouter handler) {
         this.reactiveKafkaReceiver = reactiveKafkaReceiver;
         this.handler = handler;
     }
@@ -45,7 +45,7 @@ public class KafkaAdapter {
     private void runIntent(ReceiverRecord<String, String> record) {
         log.info(record.value());
         try {
-            JsonNode request = mappper.readTree(record.value());
+            JsonNode request = mapper.readTree(record.value());
             handler.handle(request);
         } catch (JsonProcessingException e) {
             log.error("Failed to read JSON from message " + record.value());

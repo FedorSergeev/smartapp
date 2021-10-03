@@ -42,7 +42,7 @@ public class SomeDumbScenario implements Scenario {
         return (T) answerToUserDTO;
     }
 
-    public JsonNode run(JsonNode incomingMessage) {
+    private JsonNode run(JsonNode incomingMessage) {
 //        TODO: user answer message builder, not resource file
         try {
             ObjectNode answer = (ObjectNode) mapper.readTree(responseResource.getInputStream());

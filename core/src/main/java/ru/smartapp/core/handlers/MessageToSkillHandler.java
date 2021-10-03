@@ -1,6 +1,7 @@
 package ru.smartapp.core.handlers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -8,11 +9,13 @@ import ru.smartapp.core.ScenarioExecutor;
 import ru.smartapp.core.common.dto.incoming.MessageToSkillDTO;
 import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
 
-@Component
-public class MessageToSkillHandler<T extends AbstractOutgoingMessage> implements MessageHandler<MessageToSkillDTO, T> {
+import java.util.Optional;
 
-    private ScenarioExecutor scenarioExecutor;
-    private ObjectMapper mapper;
+@Component
+public class MessageToSkillHandler<T extends AbstractOutgoingMessage> extends AbstractMessageHandler<MessageToSkillDTO, T> {
+
+    private final ScenarioExecutor scenarioExecutor;
+    private final ObjectMapper mapper;
 
     @Autowired
     public MessageToSkillHandler(ScenarioExecutor scenarioExecutor, ObjectMapper mapper) {
@@ -20,8 +23,12 @@ public class MessageToSkillHandler<T extends AbstractOutgoingMessage> implements
         this.mapper = mapper;
     }
 
-    public T handle(MessageToSkillDTO incoming) throws JsonProcessingException {
-        return scenarioExecutor.run(incoming);
+    public Optional<T> handle(JsonNode incomingMessage) throws JsonProcessingException {
+        return Optional.of(scenarioExecutor.run(convert(incomingMessage)));
     }
 
+    @Override
+    MessageToSkillDTO convert(JsonNode incomingMessage) throws JsonProcessingException {
+        return mapper.readValue(mapper.writeValueAsString(incomingMessage), MessageToSkillDTO.class);
+    }
 }

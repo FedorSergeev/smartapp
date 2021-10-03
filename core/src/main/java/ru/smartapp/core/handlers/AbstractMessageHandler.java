@@ -5,11 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import ru.smartapp.core.common.dto.incoming.AbstractIncomingMessage;
 import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
 
-import java.util.Optional;
+public abstract class AbstractMessageHandler<INCOMING extends AbstractIncomingMessage, OUTGOING extends AbstractOutgoingMessage>
+        implements MessageHandler<INCOMING, OUTGOING> {
 
-@FunctionalInterface
-public interface MessageHandler<INCOMING extends AbstractIncomingMessage, OUTGOING extends AbstractOutgoingMessage> {
-
-    Optional<OUTGOING> handle(JsonNode incomingMessage) throws JsonProcessingException;
-
+    abstract INCOMING convert(JsonNode incomingMessage) throws JsonProcessingException;
 }

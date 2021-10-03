@@ -16,7 +16,7 @@ public class SdkAnswerService {
 
     @Value("classpath:sdk_answer_templates.json")
     private Resource sdkAnswerTemplateResource;
-    private ObjectMapper mapper;
+    private final ObjectMapper mapper;
     @Getter
     private ObjectNode answerTemplates;
 
