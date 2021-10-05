@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import ru.smartapp.core.common.MessageName;
+import ru.smartapp.core.common.model.User;
 import ru.smartapp.core.common.dto.incoming.MessageToSkillDTO;
 import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
+import ru.smartapp.core.common.model.ScenarioContext;
 
 import java.io.IOException;
 
@@ -27,14 +29,15 @@ public class SomeDumbScenarioTest {
 
     @Test
     public void test() throws IOException {
-        MessageToSkillDTO message = mapper.readValue(messageToSkillResource.getInputStream(), MessageToSkillDTO.class);
-        AbstractOutgoingMessage answer = scenario.run(message);
+        MessageToSkillDTO dto = mapper.readValue(messageToSkillResource.getInputStream(), MessageToSkillDTO.class);
+        AbstractOutgoingMessage answer =
+                scenario.run(new ScenarioContext<>(new User(dto), dto.getPayload().getIntent(), null, dto, null));
         assertNotNull(answer);
         assertEquals(MessageName.ANSWER_TO_USER.name(), answer.getMessageName());
-        assertEquals(message.getSessionId(), answer.getSessionId());
-        assertEquals(message.getMessageId(), answer.getMessageId());
-        assertEquals(message.getUuidDTO().getSub(), answer.getUuidDTO().getSub());
-        assertEquals(message.getUuidDTO().getUserChannel(), answer.getUuidDTO().getUserChannel());
-        assertEquals(message.getUuidDTO().getUserId(), answer.getUuidDTO().getUserId());
+        assertEquals(dto.getSessionId(), answer.getSessionId());
+        assertEquals(dto.getMessageId(), answer.getMessageId());
+        assertEquals(dto.getUuidDTO().getSub(), answer.getUuidDTO().getSub());
+        assertEquals(dto.getUuidDTO().getUserChannel(), answer.getUuidDTO().getUserChannel());
+        assertEquals(dto.getUuidDTO().getUserId(), answer.getUuidDTO().getUserId());
     }
 }

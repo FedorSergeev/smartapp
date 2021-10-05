@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import ru.smartapp.core.annotations.ScenarioClass;
+import ru.smartapp.core.answersbuilders.ErrorMessageBuilder;
 import ru.smartapp.core.common.dto.incoming.AbstractIncomingMessage;
 import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
 import ru.smartapp.core.common.dto.outgoing.AnswerToUserDTO;
+import ru.smartapp.core.common.model.ScenarioContext;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -27,7 +29,7 @@ public class SomeDumbScenario implements Scenario {
     private final Log log = LogFactory.getLog(getClass());
     @Value("classpath:response.json")
     private Resource responseResource;
-    private final ObjectMapper mapper;
+    private ObjectMapper mapper;
 
     @Autowired
     public SomeDumbScenario(ObjectMapper mapper) {
@@ -35,14 +37,14 @@ public class SomeDumbScenario implements Scenario {
     }
 
     @Override
-    public <T extends AbstractOutgoingMessage> T run(AbstractIncomingMessage incomingMessage) throws JsonProcessingException {
-        JsonNode jsonNode = mapper.readTree(mapper.writeValueAsString(incomingMessage));
+    // TODO: разобраться с generic для контекста
+    public AbstractOutgoingMessage run(ScenarioContext<? extends AbstractIncomingMessage> context) throws JsonProcessingException {
+        JsonNode jsonNode = mapper.readTree(mapper.writeValueAsString(context.getMessage()));
         JsonNode answer = run(jsonNode);
-        AnswerToUserDTO answerToUserDTO = mapper.readValue(mapper.writeValueAsString(answer), AnswerToUserDTO.class);
-        return (T) answerToUserDTO;
+        return mapper.readValue(mapper.writeValueAsString(answer), AnswerToUserDTO.class);
     }
 
-    private JsonNode run(JsonNode incomingMessage) {
+    private JsonNode run(JsonNode incomingMessage) throws JsonProcessingException {
 //        TODO: user answer message builder, not resource file
         try {
             ObjectNode answer = (ObjectNode) mapper.readTree(responseResource.getInputStream());
@@ -58,8 +60,6 @@ public class SomeDumbScenario implements Scenario {
         } catch (IOException e) {
             log.error("Hmm", e);
         }
-        // 192.168.10.29 8087
-        // todo дефолтный ответ с ошибкой
-        return null;
+        return mapper.readTree(mapper.writeValueAsString(new ErrorMessageBuilder().build()));
     }
 }

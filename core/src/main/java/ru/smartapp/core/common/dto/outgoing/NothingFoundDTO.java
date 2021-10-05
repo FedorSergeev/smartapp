@@ -10,5 +10,5 @@ import ru.smartapp.core.common.dto.AbstractMessage;
 @Setter
 public class NothingFoundDTO extends AbstractOutgoingMessage {
     @JsonProperty("payload")
-    private JsonNode payload;
+    private NothingFoundPayloadDTO payload;
 }

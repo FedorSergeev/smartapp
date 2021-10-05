@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MessageToSkillMessageDTO implements IncomingMessage {
+public class MessageToSkillMessageDTO {
     @JsonProperty("original_text")
     private String originalText;
     @JsonProperty("asr_normalized_message")

@@ -10,5 +10,5 @@ import ru.smartapp.core.common.dto.AbstractMessage;
 @Setter
 public class ServerActionDTO extends AbstractIncomingMessage {
     @JsonProperty("payload")
-    private JsonNode payload;
+    private ServerActionPayloadDTO payload;
 }

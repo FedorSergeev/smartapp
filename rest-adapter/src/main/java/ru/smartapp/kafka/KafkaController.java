@@ -37,6 +37,6 @@ public class KafkaController {
     @PostMapping
     public Mono<ResponseEntity<JsonNode>> processNlpRequest(@RequestBody String string) throws JsonProcessingException {
         log.info(format("Incoming from REST webhook: %s", string));
-        return Mono.just(ResponseEntity.ok(handler.handle(mapper.readTree(string))));
+        return Mono.just(ResponseEntity.ok(handler.handle(mapper.readTree(string)).orElse(null)));
     }
 }

@@ -1,6 +1,7 @@
 {
   "sdk_answer_template": {
     "pronounceText": "",
+    "pronounceTextType": "application/text",
     "items": [],
     "suggestions": {
       "buttons": []

@@ -1,4 +1,4 @@
-package ru.smartapp.core.common;
+package ru.smartapp.core.answersbuilders.sdkanswerbuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,12 +16,12 @@ public class SdkAnswerBuilder {
     public static final String SUGGESTION_TEXT_TEMPLATE_FIELD_NAME = "suggestion_text_template";
     public static final String SUGGESTION_DEEPLINK_TEMPLATE_FIELD_NAME = "suggestion_deeplink_template";
 
-    private final ObjectMapper mapper;
-    private final ObjectNode sdkAnswerTemplate;
-    private final ObjectNode multilineCardTemplate;
-    private final ObjectNode bubbleTemplate;
-    private final ObjectNode suggestionTextTemplate;
-    private final ObjectNode suggestionDeeplinkTemplate;
+    private ObjectMapper mapper;
+    private ObjectNode sdkAnswerTemplate;
+    private ObjectNode multilineCardTemplate;
+    private ObjectNode bubbleTemplate;
+    private ObjectNode suggestionTextTemplate;
+    private ObjectNode suggestionDeeplinkTemplate;
 
     public SdkAnswerBuilder(ObjectNode answerTemplates, ObjectMapper mapper) {
         this.mapper = mapper;
@@ -35,6 +35,17 @@ public class SdkAnswerBuilder {
 
     public SdkAnswerBuilder addPronounceText(String text) {
         sdkAnswerTemplate.put("pronounceText", text);
+        return this;
+    }
+
+    /**
+     * В тексте можно использовать SSML-разметку
+     * Например,
+     * С помощью <say-as interpret-as="spell-out">SSML</say-as> разметки я умею делать <break time="2s" /> паузы,
+     * <break /> произносить слова по <say-as interpret-as="characters">буквам</say-as> и многое другое.
+     */
+    public SdkAnswerBuilder useSsmlPronounceText() {
+        sdkAnswerTemplate.put("pronounceTextType", "application/ssml");
         return this;
     }
 

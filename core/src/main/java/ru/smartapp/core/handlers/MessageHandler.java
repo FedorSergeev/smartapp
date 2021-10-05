@@ -8,8 +8,8 @@ import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
 import java.util.Optional;
 
 @FunctionalInterface
-public interface MessageHandler<INCOMING extends AbstractIncomingMessage, OUTGOING extends AbstractOutgoingMessage> {
+public interface MessageHandler<INCOMING extends AbstractIncomingMessage> {
 
-    Optional<OUTGOING> handle(JsonNode incomingMessage) throws JsonProcessingException;
+    Optional<AbstractOutgoingMessage> handle(JsonNode incomingMessage) throws JsonProcessingException;
 
 }

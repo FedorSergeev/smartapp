@@ -1,4 +1,4 @@
-package ru.smartapp.core.common;
+package ru.smartapp.core.answersbuilders.sdkanswerbuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -16,7 +16,7 @@ public class SdkAnswerService {
 
     @Value("classpath:sdk_answer_templates.json")
     private Resource sdkAnswerTemplateResource;
-    private final ObjectMapper mapper;
+    private ObjectMapper mapper;
     @Getter
     private ObjectNode answerTemplates;
 

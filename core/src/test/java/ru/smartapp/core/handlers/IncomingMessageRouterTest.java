@@ -35,43 +35,43 @@ public class IncomingMessageRouterTest {
 
     @Test
     public void testNull() throws IOException {
-        JsonNode response = incomingMessageRouter.handle(null);
+        JsonNode response = incomingMessageRouter.handle(null).orElse(null);
         assertNotNull(response);
     }
 
     @Test
     public void testEmptyString() throws IOException {
-        JsonNode response = incomingMessageRouter.handle(mapper.readTree(""));
+        JsonNode response = incomingMessageRouter.handle(mapper.readTree("")).orElse(null);
         assertNotNull(response);
     }
 
     @Test
     public void testEmptyJson() throws IOException {
-        JsonNode response = incomingMessageRouter.handle(mapper.readTree("{}"));
+        JsonNode response = incomingMessageRouter.handle(mapper.readTree("{}")).orElse(null);
         assertNotNull(response);
     }
 
     @Test
     public void testMessageToSkill() throws IOException {
-        JsonNode response = incomingMessageRouter.handle(mapper.readTree(messageToSkillResource.getInputStream()));
+        JsonNode response = incomingMessageRouter.handle(mapper.readTree(messageToSkillResource.getInputStream())).orElse(null);
         assertNotNull(response);
     }
 
     @Test
     public void testCloseApp() throws IOException {
-        JsonNode response = incomingMessageRouter.handle(mapper.readTree(closeAppResource.getInputStream()));
+        JsonNode response = incomingMessageRouter.handle(mapper.readTree(closeAppResource.getInputStream())).orElse(null);
         assertNull(response);
     }
 
     @Test
     public void testRunApp() throws IOException {
-        JsonNode response = incomingMessageRouter.handle(mapper.readTree(runAppResource.getInputStream()));
+        JsonNode response = incomingMessageRouter.handle(mapper.readTree(runAppResource.getInputStream())).orElse(null);
         assertNotNull(response);
     }
 
     @Test
     public void testServerAction() throws IOException {
-        JsonNode response = incomingMessageRouter.handle(mapper.readTree(serverActionResource.getInputStream()));
+        JsonNode response = incomingMessageRouter.handle(mapper.readTree(serverActionResource.getInputStream())).orElse(null);
         assertNotNull(response);
     }
 }
