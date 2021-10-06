@@ -14,7 +14,7 @@ import ru.smartapp.core.common.model.ScenarioContext;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class ScenarioExecutorTest {
@@ -28,23 +28,26 @@ public class ScenarioExecutorTest {
     @Autowired
     private ScenariosMap scenariosMap;
 
-    // TODO: доделать ассерты
     @Test
     public void testSomeDumbScenario() throws IOException {
-        MessageToSkillDTO message1 = getMessage();
-        ScenarioContext<MessageToSkillDTO> scenarioContext1 = new ScenarioContext<>(message1.getPayload().getIntent(), message1);
-        AbstractOutgoingMessage answer1 = scenarioExecutor.run(scenarioContext1);
+        MessageToSkillDTO message = getMessage();
+        ScenarioContext<MessageToSkillDTO> scenarioContext = new ScenarioContext<>(message.getPayload().getIntent(), message);
+        AbstractOutgoingMessage answer = scenarioExecutor.run(scenarioContext);
 
-        JsonNode response1 = mapper.readTree(mapper.writeValueAsString(answer1));
-        assertNotNull(response1);
+        JsonNode response = mapper.readTree(mapper.writeValueAsString(answer));
+        assertNotNull(response);
+        assertFalse(response.get("payload").get("finished").asBoolean());
+        assertTrue(response.toString().contains("Хелло"));
 
-        MessageToSkillDTO message2 = getMessage();
-        message2.getPayload().setNewSession(false);
-        ScenarioContext<MessageToSkillDTO> scenarioContext2 = new ScenarioContext<>(message2.getPayload().getIntent(), message2);
-        AbstractOutgoingMessage answer2 = scenarioExecutor.run(scenarioContext2);
+        message = getMessage();
+        message.getPayload().setNewSession(false);
+        scenarioContext = new ScenarioContext<>(message.getPayload().getIntent(), message);
+        answer = scenarioExecutor.run(scenarioContext);
 
-        JsonNode response2 = mapper.readTree(mapper.writeValueAsString(answer2));
-        assertNotNull(response2);
+        response = mapper.readTree(mapper.writeValueAsString(answer));
+        assertNotNull(response);
+        assertTrue(response.get("payload").get("finished").asBoolean());
+        assertTrue(response.toString().contains("Упс"));
     }
 
     @Test

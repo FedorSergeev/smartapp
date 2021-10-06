@@ -29,7 +29,15 @@ public class CacheAdapter {
                 .map(cache -> cache.get(userUniqueId, UserScenarioDAO.class));
     }
 
-    public UserScenarioDAO updateUserScenario(UserScenarioDAO userScenarioData) {
+    public Optional<UserScenarioDAO> updateUserScenario(UserScenarioDAO userScenarioData) {
+        if (userScenarioData == null) {
+            log.error("Cache is null");
+            return Optional.empty();
+        }
+        if (userScenarioData.getUserUniqueId() == null) {
+            log.error("User id is null");
+            return Optional.empty();
+        }
         AtomicReference<UserScenarioDAO> success = new AtomicReference<>(userScenarioData);
         ofNullable(cacheManager.getCache(USER_SCENARIO_CACHE_NAME))
                 .ifPresent(cache -> {
@@ -40,7 +48,7 @@ public class CacheAdapter {
                         success.set(cachedData);
                     }
                 });
-        return success.get();
+        return Optional.of(success.get());
     }
 
     public void deleteUserScenario(final String userUniqueId) {
