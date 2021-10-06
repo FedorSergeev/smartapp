@@ -9,11 +9,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import ru.smartapp.core.ScenariosMap;
+import ru.smartapp.core.common.MessageName;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class IncomingMessageRouterTest {
@@ -37,24 +37,29 @@ public class IncomingMessageRouterTest {
     public void testNull() throws IOException {
         JsonNode response = incomingMessageRouter.handle(null).orElse(null);
         assertNotNull(response);
+        assertEquals(MessageName.ERROR.name(), response.get("messageName").asText());
     }
 
     @Test
     public void testEmptyString() throws IOException {
         JsonNode response = incomingMessageRouter.handle(mapper.readTree("")).orElse(null);
         assertNotNull(response);
+        assertEquals(MessageName.ERROR.name(), response.get("messageName").asText());
     }
 
     @Test
     public void testEmptyJson() throws IOException {
         JsonNode response = incomingMessageRouter.handle(mapper.readTree("{}")).orElse(null);
         assertNotNull(response);
+        assertEquals(MessageName.ERROR.name(), response.get("messageName").asText());
     }
 
     @Test
     public void testMessageToSkill() throws IOException {
         JsonNode response = incomingMessageRouter.handle(mapper.readTree(messageToSkillResource.getInputStream())).orElse(null);
         assertNotNull(response);
+        assertNotEquals(MessageName.ERROR.name(), response.get("messageName").asText());
+        assertNotEquals(MessageName.NOTHING_FOUND.name(), response.get("messageName").asText());
     }
 
     @Test
@@ -67,11 +72,15 @@ public class IncomingMessageRouterTest {
     public void testRunApp() throws IOException {
         JsonNode response = incomingMessageRouter.handle(mapper.readTree(runAppResource.getInputStream())).orElse(null);
         assertNotNull(response);
+        assertNotEquals(MessageName.ERROR.name(), response.get("messageName").asText());
+        assertNotEquals(MessageName.NOTHING_FOUND.name(), response.get("messageName").asText());
     }
 
     @Test
     public void testServerAction() throws IOException {
         JsonNode response = incomingMessageRouter.handle(mapper.readTree(serverActionResource.getInputStream())).orElse(null);
         assertNotNull(response);
+        assertNotEquals(MessageName.ERROR.name(), response.get("messageName").asText());
+        assertNotEquals(MessageName.NOTHING_FOUND.name(), response.get("messageName").asText());
     }
 }

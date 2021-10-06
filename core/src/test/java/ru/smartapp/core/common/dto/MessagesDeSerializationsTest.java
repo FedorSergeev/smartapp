@@ -21,7 +21,20 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MessagesSerializationsTest {
+public class MessagesDeSerializationsTest {
+
+    public static void assertEqualsJsonNodes(JsonNode one, JsonNode two) {
+        Iterator<Map.Entry<String, JsonNode>> iterator = one.fields();
+        while (iterator.hasNext()) {
+            Map.Entry<String, JsonNode> node = iterator.next();
+            assertTrue(two.has(node.getKey()));
+            if (node.getValue().getNodeType().equals(JsonNodeType.OBJECT)) {
+                assertEqualsJsonNodes(node.getValue(), two.get(node.getKey()));
+            } else {
+                assertEquals(node.getValue(), two.get(node.getKey()));
+            }
+        }
+    }
 
     @Test
     public void messageToSkillTest() throws IOException {
@@ -64,19 +77,6 @@ public class MessagesSerializationsTest {
         JsonNode requestJson = mapper.readTree(file);
         JsonNode actual = mapper.readTree(mapper.writeValueAsString(mapper.readValue(file, clazz)));
         assertEqualsJsonNodes(requestJson, actual);
-    }
-
-    private void assertEqualsJsonNodes(JsonNode one, JsonNode two) {
-        Iterator<Map.Entry<String, JsonNode>> iterator = one.fields();
-        while (iterator.hasNext()) {
-            Map.Entry<String, JsonNode> node = iterator.next();
-            assertTrue(two.has(node.getKey()));
-            if (node.getValue().getNodeType().equals(JsonNodeType.OBJECT)) {
-                assertEqualsJsonNodes(node.getValue(), two.get(node.getKey()));
-            } else {
-                assertEquals(node.getValue(), two.get(node.getKey()));
-            }
-        }
     }
 
 }

@@ -10,9 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.smartapp.core.ScenarioExecutor;
 import ru.smartapp.core.cache.CacheAdapter;
-import ru.smartapp.core.common.dao.ScenarioDataDAO;
-import ru.smartapp.core.common.dao.UserScenarioDAO;
-import ru.smartapp.core.common.model.User;
 import ru.smartapp.core.common.dto.incoming.RunAppDTO;
 import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
 import ru.smartapp.core.common.model.ScenarioContext;
@@ -45,11 +42,6 @@ public class RunAppHandler<I extends RunAppDTO> extends AbstractMessageHandler<I
 
     private ScenarioContext<I> buildScenarioContext(JsonNode incomingMessage) throws JsonProcessingException {
         I dto = convert(incomingMessage);
-        // TODO повтор кода
-        User user = new User(dto);
-        Optional<UserScenarioDAO> userScenarioOptional = cacheAdapter.getUserScenario(user.getUserUniqueId());
-        String stateId = userScenarioOptional.map(UserScenarioDAO::getStateId).orElse(null);
-        ScenarioDataDAO scenarioData = userScenarioOptional.map(UserScenarioDAO::getScenarioData).orElse(null);
-        return new ScenarioContext<>(user, dto.getPayload().getIntent(), stateId, dto, scenarioData);
+        return new ScenarioContext<>(dto.getPayload().getIntent(), dto);
     }
 }

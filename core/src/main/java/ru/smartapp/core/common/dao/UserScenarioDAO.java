@@ -14,6 +14,8 @@ public class UserScenarioDAO implements Serializable {
 
     private String userUniqueId;
     @Nullable
+    private String intent;
+    @Nullable
     private String stateId;
     @Nullable
     private ScenarioDataDAO scenarioData;

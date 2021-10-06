@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.smartapp.core.answersbuilders.ErrorMessageBuilder;
+import ru.smartapp.core.common.AppErrorCodes;
 import ru.smartapp.core.common.MessageName;
 import ru.smartapp.core.common.dto.incoming.*;
 import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
@@ -92,7 +93,7 @@ public class IncomingMessageRouter {
         JsonNode result = null;
         try {
             if (!validateIncomingMessage(incomingMessage)) {
-                return Optional.ofNullable(mapper.readTree(mapper.writeValueAsString(new ErrorMessageBuilder().build())));
+                return Optional.ofNullable(mapper.readTree(mapper.writeValueAsString(new ErrorMessageBuilder().build(AppErrorCodes.ERROR.getCode(), "", null))));
             }
             Optional<? extends AbstractOutgoingMessage> optional =
                     getIncomingMessageHandler(incomingMessage).handle(incomingMessage);

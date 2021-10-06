@@ -1,65 +1,63 @@
 package ru.smartapp.core.scenarios;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import ru.smartapp.core.annotations.ScenarioClass;
-import ru.smartapp.core.answersbuilders.ErrorMessageBuilder;
+import ru.smartapp.core.answersbuilders.AnswerToUserMessageBuilder;
+import ru.smartapp.core.answersbuilders.sdkanswerbuilder.SdkAnswerBuilder;
+import ru.smartapp.core.answersbuilders.sdkanswerbuilder.SdkAnswerService;
 import ru.smartapp.core.common.dto.incoming.AbstractIncomingMessage;
 import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
-import ru.smartapp.core.common.dto.outgoing.AnswerToUserDTO;
 import ru.smartapp.core.common.model.ScenarioContext;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import static java.lang.String.format;
 
 @Service
 @ScenarioClass({"run_app"})
 public class SomeDumbScenario implements Scenario {
 
     private final Log log = LogFactory.getLog(getClass());
-    @Value("classpath:response.json")
-    private Resource responseResource;
     private ObjectMapper mapper;
+    private SdkAnswerService sdkAnswerService;
 
     @Autowired
-    public SomeDumbScenario(ObjectMapper mapper) {
+    public SomeDumbScenario(ObjectMapper mapper, SdkAnswerService sdkAnswerService) {
         this.mapper = mapper;
+        this.sdkAnswerService = sdkAnswerService;
     }
 
     @Override
-    // TODO: разобраться с generic для контекста
     public AbstractOutgoingMessage run(ScenarioContext<? extends AbstractIncomingMessage> context) throws JsonProcessingException {
-        JsonNode jsonNode = mapper.readTree(mapper.writeValueAsString(context.getMessage()));
-        JsonNode answer = run(jsonNode);
-        return mapper.readValue(mapper.writeValueAsString(answer), AnswerToUserDTO.class);
+        String stateId = context.getStateId();
+        if (stateId == null) {
+            return hello(context);
+        }
+        return bye(context);
     }
 
-    private JsonNode run(JsonNode incomingMessage) throws JsonProcessingException {
-//        TODO: user answer message builder, not resource file
-        try {
-            ObjectNode answer = (ObjectNode) mapper.readTree(responseResource.getInputStream());
-            answer.set("sessionId", incomingMessage.get("sessionId"));
-            answer.set("messageId", incomingMessage.get("messageId"));
-            answer.set("uuid", incomingMessage.get("uuid"));
-            log.info(format("Outgoing from scenario %s: %s", getClass().getTypeName(), answer));
-            return answer;
-        } catch (JsonProcessingException e) {
-            log.error(format("Failed to convert response to JsonNode %s", e));
-        } catch (FileNotFoundException e) {
-            log.error("Ti loh, net faila", e);
-        } catch (IOException e) {
-            log.error("Hmm", e);
-        }
-        return mapper.readTree(mapper.writeValueAsString(new ErrorMessageBuilder().build()));
+    private AbstractOutgoingMessage hello(ScenarioContext<? extends AbstractIncomingMessage> context) throws JsonProcessingException {
+        AbstractIncomingMessage incomingMessage = context.getMessage();
+        SdkAnswerBuilder answerBuilder = sdkAnswerService.getSdkAnswerBuilder();
+        answerBuilder
+                .addText("Hello from java app")
+                .addVoice("Хелло фром джава апп")
+                .addButtonWithText("Не нажимай")
+                .addSuggestionText("Что ты умеешь?")
+                .notFinished();
+        context.setStateId("bye");
+        return new AnswerToUserMessageBuilder().build(answerBuilder, incomingMessage);
+    }
+
+    private AbstractOutgoingMessage bye(ScenarioContext<? extends AbstractIncomingMessage> context) throws JsonProcessingException {
+        AbstractIncomingMessage incomingMessage = context.getMessage();
+        SdkAnswerBuilder answerBuilder = sdkAnswerService.getSdkAnswerBuilder();
+        answerBuilder
+                .addText("Упс, ошибочка вышла.")
+                .addVoice("<audio text=\"упс\"/>, ошибочка вышла.")
+                .useSsmlVoice()
+                .finished();
+        return new AnswerToUserMessageBuilder().build(answerBuilder, incomingMessage);
     }
 }

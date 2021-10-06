@@ -35,7 +35,7 @@ public class CacheAdapter {
                 .ifPresent(cache -> {
                     UserScenarioDAO cachedData = cache.get(userScenarioData.getUserUniqueId(), UserScenarioDAO.class);
                     if (cachedData == null || cachedData.hashCode() != userScenarioData.hashCode()) {
-                        cache.put(userScenarioData, userScenarioData);
+                        cache.put(userScenarioData.getUserUniqueId(), userScenarioData);
                     } else {
                         success.set(cachedData);
                     }

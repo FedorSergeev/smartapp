@@ -1,8 +1,13 @@
 package ru.smartapp.core.common.dto.incoming;
 
+import org.jetbrains.annotations.Nullable;
 import ru.smartapp.core.common.dto.AbstractMessage;
+import ru.smartapp.core.common.dto.DeviceDTO;
 
 
 public abstract class AbstractIncomingMessage extends AbstractMessage implements IncomingMessage {
-
+    // TODO: что-то смущает, похоже на питонский @property, что не очень гуд.
+    //  Если объект обязателен для ответных сообщений, то почему бы не положить выше уровнем
+    @Nullable
+    public abstract DeviceDTO getDevice();
 }

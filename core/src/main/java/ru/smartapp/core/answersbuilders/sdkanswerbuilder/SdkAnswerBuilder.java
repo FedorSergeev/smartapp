@@ -33,7 +33,7 @@ public class SdkAnswerBuilder {
 
     }
 
-    public SdkAnswerBuilder addPronounceText(String text) {
+    public SdkAnswerBuilder addVoice(String text) {
         sdkAnswerTemplate.put("pronounceText", text);
         return this;
     }
@@ -44,7 +44,7 @@ public class SdkAnswerBuilder {
      * С помощью <say-as interpret-as="spell-out">SSML</say-as> разметки я умею делать <break time="2s" /> паузы,
      * <break /> произносить слова по <say-as interpret-as="characters">буквам</say-as> и многое другое.
      */
-    public SdkAnswerBuilder useSsmlPronounceText() {
+    public SdkAnswerBuilder useSsmlVoice() {
         sdkAnswerTemplate.put("pronounceTextType", "application/ssml");
         return this;
     }
@@ -54,18 +54,23 @@ public class SdkAnswerBuilder {
      *
      * @param texts список фраз или одна фраза
      */
-    public SdkAnswerBuilder addBubbleText(List<String> texts) {
+    public SdkAnswerBuilder addTexts(List<String> texts) {
         for (String text : texts) {
-            if (Strings.isNotEmpty(text)) {
-                ObjectNode node = bubbleTemplate.deepCopy();
-                ((ObjectNode) (node.get("bubble"))).put("text", text);
-                sdkAnswerTemplate.withArray("items").add(node);
-            }
+            addText(text);
         }
         return this;
     }
 
-    public SdkAnswerBuilder addDeeplinkButton(String text, String deeplink) throws JsonProcessingException {
+    public SdkAnswerBuilder addText(String text) {
+        if (Strings.isNotEmpty(text)) {
+            ObjectNode node = bubbleTemplate.deepCopy();
+            ((ObjectNode) (node.get("bubble"))).put("text", text);
+            sdkAnswerTemplate.withArray("items").add(node);
+        }
+        return this;
+    }
+
+    public SdkAnswerBuilder addButtonWithDeeplink(String text, String deeplink) throws JsonProcessingException {
         ObjectNode card = multilineCardTemplate.deepCopy();
         ((ObjectNode) (card.get("card").withArray("cells").get(0).get("left").get("title"))).put("text", text);
         JsonNode deeplinkNode = mapper.readTree(String.format("{\"type\":\"deep_link\", \"deep_link\":\"%s\"}", deeplink));
@@ -74,7 +79,7 @@ public class SdkAnswerBuilder {
         return this;
     }
 
-    public SdkAnswerBuilder addTextButton(String text) {
+    public SdkAnswerBuilder addButtonWithText(String text) {
         ObjectNode card = multilineCardTemplate.deepCopy();
         ((ObjectNode) (card.get("card").withArray("cells").get(0).get("left").get("title"))).put("text", text);
         ((ObjectNode) (card.get("card").get("cells").get(0).get("actions").get(0))).put("text", text);
@@ -111,6 +116,10 @@ public class SdkAnswerBuilder {
     public SdkAnswerBuilder notFinished() {
         sdkAnswerTemplate.put("finished", false);
         return this;
+    }
+
+    public ObjectNode getJson() {
+        return sdkAnswerTemplate;
     }
 
 }

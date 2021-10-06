@@ -1,4 +1,4 @@
-package ru.smartapp.core.common;
+package ru.smartapp.core.answersbuilders.sdkanswerbuilder;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -10,12 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.smartapp.core.ScenarioExecutor;
 import ru.smartapp.core.cache.CacheAdapter;
-import ru.smartapp.core.common.dao.ScenarioDataDAO;
-import ru.smartapp.core.common.dao.UserScenarioDAO;
 import ru.smartapp.core.common.dto.incoming.ServerActionDTO;
+import ru.smartapp.core.common.dto.incoming.ServerActionPayloadDTO;
 import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
 import ru.smartapp.core.common.model.ScenarioContext;
-import ru.smartapp.core.common.model.User;
 
 import java.util.Optional;
 
@@ -45,16 +43,13 @@ public class ServerActionHandler<I extends ServerActionDTO> extends AbstractMess
 
     private ScenarioContext<I> buildScenarioContext(JsonNode incomingMessage) throws JsonProcessingException {
         I dto = convert(incomingMessage);
-        // TODO повтор кода
-        User user = new User(dto);
-        Optional<UserScenarioDAO> userScenarioOptional = cacheAdapter.getUserScenario(user.getUserUniqueId());
-        String stateId = userScenarioOptional.map(UserScenarioDAO::getStateId).orElse(null);
-        ScenarioDataDAO scenarioData = userScenarioOptional.map(UserScenarioDAO::getScenarioData).orElse(null);
-        // TODO наложить ограничение на объект ServerActionDTO: требовать непустое поле текстовое intent в  server_actions
-        String intent = null;
-        if (dto.getPayload().getServerAction().hasNonNull("intent")) {
-            intent = dto.getPayload().getServerAction().get("intent").asText();
-        }
-        return new ScenarioContext<>(user, intent, stateId, dto, scenarioData);
+        // TODO откуда брать айди сценария
+        String intent = Optional.ofNullable(dto.getPayload())
+                .map(ServerActionPayloadDTO::getServerAction)
+                .filter(jsonNode -> jsonNode.hasNonNull("intent"))
+                .map(jsonNode -> jsonNode.get("intent"))
+                .map(JsonNode::asText)
+                .orElse(null);
+        return new ScenarioContext<>(intent, dto);
     }
 }
