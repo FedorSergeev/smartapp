@@ -37,38 +37,17 @@ public class HowSaveForRetirementScenario implements Scenario {
     @Override
     public AbstractOutgoingMessage run(ScenarioContext<? extends AbstractIncomingMessage> context) throws JsonProcessingException {
         JsonNode answerJsonNode = scenariosTextsService.getTextMap().get("how_to_save_for_retirement").get("answer_no_client_profile");
-        String stateId = context.getStateId();
-        if (stateId == null) {
-            return bye(context);
-        }
-        return bye(context);
-    }
-
-    private AbstractOutgoingMessage hello(ScenarioContext<? extends AbstractIncomingMessage> context) throws JsonProcessingException {
+        JsonNode sberAnswer = answerJsonNode.withArray("sber").get(0);
+        String text = sberAnswer.get("text").asText();
+        String voice = sberAnswer.get("voice").asText();
         AbstractIncomingMessage incomingMessage = context.getMessage();
         SdkAnswerBuilder answerBuilder = sdkAnswerService.getSdkAnswerBuilder();
         answerBuilder
-                .addText("Hello from java app")
-                .addVoice("Хелло фром джава апп")
+                .addText(text)
+                .addVoice(voice)
                 .addButtonWithText("Не нажимай")
                 .addSuggestionText("Что ты умеешь?")
-                .notFinished();
-        context.setStateId("bye");
-        return new AnswerToUserMessageBuilder().build(answerBuilder, incomingMessage);
-    }
-
-    private AbstractOutgoingMessage bye(ScenarioContext<? extends AbstractIncomingMessage> context) throws JsonProcessingException {
-        AbstractIncomingMessage incomingMessage = context.getMessage();
-        SdkAnswerBuilder answerBuilder = sdkAnswerService.getSdkAnswerBuilder();
-        answerBuilder
-                .addText("Упс, ошибочка вышла.")
-                .addVoice("<audio text=\"упс\"/>, ошибочка вышла.")
-                .useSsmlVoice()
                 .finished();
         return new AnswerToUserMessageBuilder().build(answerBuilder, incomingMessage);
     }
-}
-
-class ScenarioTexts {
-
 }

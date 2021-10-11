@@ -27,8 +27,9 @@ public class HowSaveForRetirementTest {
     private HowSaveForRetirementScenario howSaveForRetirementScenario;
 
     @Test
-    public void testHello() throws IOException {
+    public void testMessage() throws IOException {
         MessageToSkillDTO dto = mapper.readValue(messageToSkillResource.getInputStream(), MessageToSkillDTO.class);
+        dto.getPayload().setIntent("how_to_save_for_retirement");
         ScenarioContext<MessageToSkillDTO> context = new ScenarioContext<>(dto.getPayload().getIntent(), dto);
         AbstractOutgoingMessage answer = howSaveForRetirementScenario.run(context);
         assertNotNull(answer);
@@ -38,26 +39,14 @@ public class HowSaveForRetirementTest {
         assertEquals(dto.getUuidDTO().getSub(), answer.getUuidDTO().getSub());
         assertEquals(dto.getUuidDTO().getUserChannel(), answer.getUuidDTO().getUserChannel());
         assertEquals(dto.getUuidDTO().getUserId(), answer.getUuidDTO().getUserId());
-        assertEquals("bye", context.getStateId());
+        assertNull(context.getStateId());
         AnswerToUserDTO answerToUserDTO = (AnswerToUserDTO) answer;
-        assertFalse(answerToUserDTO.getPayload().get("finished").asBoolean());
-    }
-
-    @Test
-    public void testBye() throws IOException {
-        MessageToSkillDTO dto = mapper.readValue(messageToSkillResource.getInputStream(), MessageToSkillDTO.class);
-        ScenarioContext<MessageToSkillDTO> context = new ScenarioContext<>(dto.getPayload().getIntent(), dto);
-        AbstractOutgoingMessage answer1 = howSaveForRetirementScenario.run(context);
-        context.setMessage(dto);
-        AbstractOutgoingMessage answer2 = howSaveForRetirementScenario.run(context);
-        assertNotNull(answer2);
-        assertEquals(MessageName.ANSWER_TO_USER.name(), answer2.getMessageName());
-        assertEquals(dto.getSessionId(), answer2.getSessionId());
-        assertEquals(dto.getMessageId(), answer2.getMessageId());
-        assertEquals(dto.getUuidDTO().getSub(), answer2.getUuidDTO().getSub());
-        assertEquals(dto.getUuidDTO().getUserChannel(), answer2.getUuidDTO().getUserChannel());
-        assertEquals(dto.getUuidDTO().getUserId(), answer2.getUuidDTO().getUserId());
-        AnswerToUserDTO answerToUserDTO = (AnswerToUserDTO) answer2;
         assertTrue(answerToUserDTO.getPayload().get("finished").asBoolean());
+        String pronounceText = answerToUserDTO.getPayload().get("pronounceText").asText();
+        assertNotNull(pronounceText);
+        assertTrue(pronounceText.length() > 0);
+        String text = answerToUserDTO.getPayload().withArray("items").get(0).get("bubble").get("text").asText();
+        assertNotNull(text);
+        assertTrue(text.length() > 0);
     }
 }
