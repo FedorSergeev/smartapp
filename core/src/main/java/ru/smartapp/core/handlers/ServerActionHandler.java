@@ -4,8 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.smartapp.core.ScenarioExecutor;
@@ -17,9 +16,9 @@ import ru.smartapp.core.common.model.ScenarioContext;
 
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class ServerActionHandler<I extends ServerActionDTO> extends AbstractMessageHandler<I> {
-    private final Log log = LogFactory.getLog(getClass());
     private ScenarioExecutor scenarioExecutor;
     private ObjectMapper mapper;
     private CacheAdapter cacheAdapter;

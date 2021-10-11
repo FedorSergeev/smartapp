@@ -15,22 +15,28 @@ import ru.smartapp.core.common.model.ScenarioContext;
 
 @Slf4j
 @Service
-@ScenarioClass({"run_app"})
-public class SomeDumbScenario implements Scenario {
+@ScenarioClass({"how_to_save_for_retirement"})
+public class HowSaveForRetirementScenario implements Scenario {
     private ObjectMapper mapper;
     private SdkAnswerService sdkAnswerService;
 
     @Autowired
-    public SomeDumbScenario(ObjectMapper mapper, SdkAnswerService sdkAnswerService) {
+    public HowSaveForRetirementScenario(ObjectMapper mapper, SdkAnswerService sdkAnswerService) {
         this.mapper = mapper;
         this.sdkAnswerService = sdkAnswerService;
     }
 
     @Override
     public AbstractOutgoingMessage run(ScenarioContext<? extends AbstractIncomingMessage> context) throws JsonProcessingException {
+        /*
+         random_answer = self.get_random_answer(scenario_context, self.answer_no_client_profile)
+         answer_builder = SdkAnswerBuilder()
+         answer_builder.add_text(random_answer["text"])
+         answer_builder.add_voice(random_answer["voice"])
+         */
         String stateId = context.getStateId();
         if (stateId == null) {
-            return hello(context);
+            return bye(context);
         }
         return bye(context);
     }

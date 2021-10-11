@@ -18,6 +18,7 @@ import ru.smartapp.core.common.dto.outgoing.NothingFoundDTO;
 import ru.smartapp.core.common.dto.outgoing.PolicyRunAppDTO;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -35,7 +36,7 @@ public class AnswerBuilderTest {
     public void testAnswerToUserMessageBuilder() throws IOException {
         MessageToSkillDTO incomingMessage = getIncomingMessage();
         SdkAnswerBuilder answerBuilder = sdkAnswerService.getSdkAnswerBuilder();
-        answerBuilder.addText("Hello from java app");
+        answerBuilder.addTexts(Collections.singletonList("Hello from java app"));
         answerBuilder.addVoice("Хелло фром джава апп");
         AnswerToUserDTO dto = new AnswerToUserMessageBuilder().build(answerBuilder, incomingMessage);
         assertNotNull(dto);
@@ -45,7 +46,7 @@ public class AnswerBuilderTest {
         assertEquals(incomingMessage.getUuidDTO(), dto.getUuidDTO());
         assertNotNull(dto.getPayload());
         assertNotNull(dto.getPayload().get("device"));
-        JsonNode deviceJson = mapper.readTree(mapper.writeValueAsString(incomingMessage.getDevice()));
+        JsonNode deviceJson = mapper.readTree(mapper.writeValueAsString(incomingMessage.getDeviceDTO()));
         MessagesDeSerializationsTest.assertEqualsJsonNodes(deviceJson, dto.getPayload().get("device"));
     }
 
@@ -62,7 +63,7 @@ public class AnswerBuilderTest {
         assertEquals(incomingMessage.getSessionId(), dto.getSessionId());
         assertEquals(incomingMessage.getUuidDTO(), dto.getUuidDTO());
         assertNotNull(dto.getPayload().getDevice());
-        assertEquals(incomingMessage.getDevice(), dto.getPayload().getDevice());
+        assertEquals(incomingMessage.getDeviceDTO(), dto.getPayload().getDevice());
     }
 
     @Test
@@ -74,7 +75,7 @@ public class AnswerBuilderTest {
         assertEquals(incomingMessage.getMessageId(), dto.getMessageId());
         assertEquals(incomingMessage.getSessionId(), dto.getSessionId());
         assertEquals(incomingMessage.getUuidDTO(), dto.getUuidDTO());
-        assertEquals(incomingMessage.getDevice(), dto.getPayload().getDevice());
+        assertEquals(incomingMessage.getDeviceDTO(), dto.getPayload().getDevice());
     }
 
     @Test
@@ -91,7 +92,7 @@ public class AnswerBuilderTest {
         assertNotNull(dto.getPayload().getDevice());
         assertEquals("projectName1", dto.getPayload().getProjectName());
         MessagesDeSerializationsTest.assertEqualsJsonNodes(serverAction, dto.getPayload().getServerAction());
-        assertEquals(incomingMessage.getDevice(), dto.getPayload().getDevice());
+        assertEquals(incomingMessage.getDeviceDTO(), dto.getPayload().getDevice());
     }
 
     private MessageToSkillDTO getIncomingMessage() throws IOException {

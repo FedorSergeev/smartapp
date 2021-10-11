@@ -2,22 +2,28 @@ package ru.smartapp.core.common.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import ru.smartapp.core.cache.CacheAdapter;
+import ru.smartapp.core.common.Character;
 import ru.smartapp.core.common.dao.ScenarioDataDAO;
 import ru.smartapp.core.common.dao.UserScenarioDAO;
+import ru.smartapp.core.common.dto.CharacterDTO;
 import ru.smartapp.core.common.dto.incoming.AbstractIncomingMessage;
 import ru.smartapp.core.common.dto.incoming.MessageToSkillDTO;
 import ru.smartapp.core.common.dto.incoming.MessageToSkillPayloadDTO;
 import ru.smartapp.core.config.SpringContext;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 @Getter
 @Setter
+@Slf4j
 public class ScenarioContext<T extends AbstractIncomingMessage> {
     private User user;
     private String intent;
+    private Character character;
     @Nullable
     private String stateId;
     @Nullable
@@ -30,6 +36,7 @@ public class ScenarioContext<T extends AbstractIncomingMessage> {
     ) {
         this.user = new User(message);
         this.intent = intent;
+        this.character = getCharacterFromMessage(message);
         this.message = message;
 
         CacheAdapter cacheAdapter = getCacheAdapter();
@@ -54,5 +61,13 @@ public class ScenarioContext<T extends AbstractIncomingMessage> {
             return Optional.of(messageToSkillDTO).map(MessageToSkillDTO::getPayload).map(MessageToSkillPayloadDTO::getNewSession).orElse(false);
         }
         return false;
+    }
+
+    private Character getCharacterFromMessage(T message) {
+        Optional<String> optionalCharacterId = Optional.ofNullable(message.getCharacterDTO()).map(CharacterDTO::getId);
+        if (!optionalCharacterId.isPresent()) {
+            log.warn(String.format("Expected character ids: %s, got null", Arrays.toString(Character.values())));
+        }
+        return Character.valueById(optionalCharacterId.orElse(Character.SBER.getId()));
     }
 }
