@@ -1,7 +1,6 @@
 package ru.smartapp.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
+import ru.smartapp.core.common.dto.outgoing.OutgoingMessage;
 import ru.smartapp.core.handlers.IncomingMessageRouter;
 
 import static java.lang.String.format;
@@ -35,8 +35,8 @@ public class KafkaController {
     }
 
     @PostMapping
-    public Mono<ResponseEntity<JsonNode>> processNlpRequest(@RequestBody String string) throws JsonProcessingException {
+    public Mono<ResponseEntity<OutgoingMessage>> processNlpRequest(@RequestBody String string) throws JsonProcessingException {
         log.info(format("Incoming from REST webhook: %s", string));
-        return Mono.just(ResponseEntity.ok(handler.handle(mapper.readTree(string)).orElse(null)));
+        return handler.handle(mapper.readTree(string)).map(ResponseEntity::ok);
     }
 }

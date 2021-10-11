@@ -7,11 +7,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 import ru.smartapp.core.ScenarioExecutor;
 import ru.smartapp.core.cache.CacheAdapter;
 import ru.smartapp.core.common.dto.incoming.ServerActionDTO;
 import ru.smartapp.core.common.dto.incoming.ServerActionPayloadDTO;
-import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
+import ru.smartapp.core.common.dto.outgoing.OutgoingMessage;
 import ru.smartapp.core.common.model.ScenarioContext;
 
 import java.util.Optional;
@@ -30,8 +31,8 @@ public class ServerActionHandler<I extends ServerActionDTO> extends AbstractMess
         this.cacheAdapter = cacheAdapter;
     }
 
-    public Optional<AbstractOutgoingMessage> handle(JsonNode incomingMessage) throws JsonProcessingException {
-        return Optional.of(scenarioExecutor.run(buildScenarioContext(incomingMessage)));
+    public Mono<OutgoingMessage> handle(JsonNode incomingMessage) throws JsonProcessingException {
+        return scenarioExecutor.run(buildScenarioContext(incomingMessage));
     }
 
     @Override

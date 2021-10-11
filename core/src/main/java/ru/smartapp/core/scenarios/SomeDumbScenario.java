@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 import ru.smartapp.core.annotations.ScenarioClass;
 import ru.smartapp.core.answersbuilders.AnswerToUserMessageBuilder;
 import ru.smartapp.core.answersbuilders.sdkanswerbuilder.SdkAnswerBuilder;
@@ -27,7 +28,7 @@ public class SomeDumbScenario implements Scenario {
     }
 
     @Override
-    public AbstractOutgoingMessage run(ScenarioContext<? extends AbstractIncomingMessage> context) throws JsonProcessingException {
+    public Mono<AbstractOutgoingMessage> run(ScenarioContext<? extends AbstractIncomingMessage> context) throws JsonProcessingException {
         String stateId = context.getStateId();
         if (stateId == null) {
             return hello(context);
@@ -35,7 +36,7 @@ public class SomeDumbScenario implements Scenario {
         return bye(context);
     }
 
-    private AbstractOutgoingMessage hello(ScenarioContext<? extends AbstractIncomingMessage> context) throws JsonProcessingException {
+    private Mono<AbstractOutgoingMessage> hello(ScenarioContext<? extends AbstractIncomingMessage> context) throws JsonProcessingException {
         AbstractIncomingMessage incomingMessage = context.getMessage();
         SdkAnswerBuilder answerBuilder = sdkAnswerService.getSdkAnswerBuilder();
         answerBuilder
@@ -45,10 +46,10 @@ public class SomeDumbScenario implements Scenario {
                 .addSuggestionText("Что ты умеешь?")
                 .notFinished();
         context.setStateId("bye");
-        return new AnswerToUserMessageBuilder().build(answerBuilder, incomingMessage);
+        return Mono.just(new AnswerToUserMessageBuilder().build(answerBuilder, incomingMessage));
     }
 
-    private AbstractOutgoingMessage bye(ScenarioContext<? extends AbstractIncomingMessage> context) throws JsonProcessingException {
+    private Mono<AbstractOutgoingMessage> bye(ScenarioContext<? extends AbstractIncomingMessage> context) throws JsonProcessingException {
         AbstractIncomingMessage incomingMessage = context.getMessage();
         SdkAnswerBuilder answerBuilder = sdkAnswerService.getSdkAnswerBuilder();
         answerBuilder
@@ -56,6 +57,6 @@ public class SomeDumbScenario implements Scenario {
                 .addVoice("<audio text=\"упс\"/>, ошибочка вышла.")
                 .useSsmlVoice()
                 .finished();
-        return new AnswerToUserMessageBuilder().build(answerBuilder, incomingMessage);
+        return Mono.just(new AnswerToUserMessageBuilder().build(answerBuilder, incomingMessage));
     }
 }

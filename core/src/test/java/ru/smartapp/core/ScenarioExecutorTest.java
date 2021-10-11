@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import ru.smartapp.core.common.dto.incoming.MessageToSkillDTO;
-import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
+import ru.smartapp.core.common.dto.outgoing.OutgoingMessage;
 import ru.smartapp.core.common.model.ScenarioContext;
 
 import java.io.IOException;
@@ -32,7 +32,7 @@ public class ScenarioExecutorTest {
     public void testSomeDumbScenario() throws IOException {
         MessageToSkillDTO message = getMessage();
         ScenarioContext<MessageToSkillDTO> scenarioContext = new ScenarioContext<>(message.getPayload().getIntent(), message);
-        AbstractOutgoingMessage answer = scenarioExecutor.run(scenarioContext);
+        OutgoingMessage answer = scenarioExecutor.run(scenarioContext).block();
 
         JsonNode response = mapper.readTree(mapper.writeValueAsString(answer));
         assertNotNull(response);
@@ -42,7 +42,7 @@ public class ScenarioExecutorTest {
         message = getMessage();
         message.getPayload().setNewSession(false);
         scenarioContext = new ScenarioContext<>(message.getPayload().getIntent(), message);
-        answer = scenarioExecutor.run(scenarioContext);
+        answer = scenarioExecutor.run(scenarioContext).block();
 
         response = mapper.readTree(mapper.writeValueAsString(answer));
         assertNotNull(response);
@@ -53,8 +53,8 @@ public class ScenarioExecutorTest {
     @Test
     public void test() throws IOException {
         MessageToSkillDTO message = getMessage();
-        AbstractOutgoingMessage answer =
-                scenarioExecutor.run(new ScenarioContext<>(message.getPayload().getIntent(), message));
+        OutgoingMessage answer =
+                scenarioExecutor.run(new ScenarioContext<>(message.getPayload().getIntent(), message)).block();
         JsonNode response = mapper.readTree(mapper.writeValueAsString(answer));
         assertNotNull(response);
     }

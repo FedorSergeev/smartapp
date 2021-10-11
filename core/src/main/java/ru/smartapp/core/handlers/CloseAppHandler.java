@@ -7,12 +7,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 import ru.smartapp.core.cache.CacheAdapter;
 import ru.smartapp.core.common.dto.incoming.CloseAppDTO;
-import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
+import ru.smartapp.core.common.dto.outgoing.OutgoingMessage;
 import ru.smartapp.core.common.model.User;
-
-import java.util.Optional;
 
 @Slf4j
 @Component
@@ -26,12 +25,12 @@ public class CloseAppHandler<I extends CloseAppDTO> extends AbstractMessageHandl
         this.cacheAdapter = cacheAdapter;
     }
 
-    public Optional<AbstractOutgoingMessage> handle(JsonNode incomingMessage) throws JsonProcessingException {
+    public Mono<OutgoingMessage> handle(JsonNode incomingMessage) throws JsonProcessingException {
         CloseAppDTO dto = convert(incomingMessage);
         User user = new User(dto);
         log.info(String.format("Removing cache for user '%s' with unique id '%s'", user.getUserId(), user.getUserUniqueId()));
         cacheAdapter.deleteUserScenario(user.getUserUniqueId());
-        return Optional.empty();
+        return Mono.empty();
     }
 
     @Override

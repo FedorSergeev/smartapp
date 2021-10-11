@@ -11,7 +11,6 @@ import ru.smartapp.core.common.dto.incoming.MessageToSkillDTO;
 import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
 import ru.smartapp.core.common.dto.outgoing.AnswerToUserDTO;
 import ru.smartapp.core.common.model.ScenarioContext;
-import ru.smartapp.core.handlers.IncomingMessageRouter;
 
 import java.io.IOException;
 
@@ -31,7 +30,7 @@ public class SomeDumbScenarioTest {
     public void testHello() throws IOException {
         MessageToSkillDTO dto = mapper.readValue(messageToSkillResource.getInputStream(), MessageToSkillDTO.class);
         ScenarioContext<MessageToSkillDTO> context = new ScenarioContext<>(dto.getPayload().getIntent(), dto);
-        AbstractOutgoingMessage answer = someDumbScenario.run(context);
+        AbstractOutgoingMessage answer = someDumbScenario.run(context).block();
         assertNotNull(answer);
         assertEquals(MessageName.ANSWER_TO_USER.name(), answer.getMessageName());
         assertEquals(dto.getSessionId(), answer.getSessionId());
@@ -48,9 +47,9 @@ public class SomeDumbScenarioTest {
     public void testBye() throws IOException {
         MessageToSkillDTO dto = mapper.readValue(messageToSkillResource.getInputStream(), MessageToSkillDTO.class);
         ScenarioContext<MessageToSkillDTO> context = new ScenarioContext<>(dto.getPayload().getIntent(), dto);
-        AbstractOutgoingMessage answer1 = someDumbScenario.run(context);
+        AbstractOutgoingMessage answer1 = someDumbScenario.run(context).block();
         context.setMessage(dto);
-        AbstractOutgoingMessage answer2 = someDumbScenario.run(context);
+        AbstractOutgoingMessage answer2 = someDumbScenario.run(context).block();
         assertNotNull(answer2);
         assertEquals(MessageName.ANSWER_TO_USER.name(), answer2.getMessageName());
         assertEquals(dto.getSessionId(), answer2.getSessionId());
