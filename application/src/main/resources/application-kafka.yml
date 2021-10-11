@@ -1,4 +1,5 @@
 kafka:
+  servers: tkle-mess0066
   topic:
     in: toSmartApp
     out: toDp

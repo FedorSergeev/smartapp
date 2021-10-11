@@ -5,6 +5,7 @@ plugins {
     id "com.palantir.docker" version "0.22.1"
     id "com.palantir.docker-run" version "0.22.1"
     id 'com.palantir.git-version' version '0.7.3'
+//    id 'se.bjurr.gitchangelog.git-changelog-gradle-plugin' version '1.71.4'
     id 'java'
     id 'jacoco'
 }
