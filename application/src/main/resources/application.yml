@@ -1,0 +1,7 @@
+spring:
+#  profiles.active: kafka
+  main:
+    allow-bean-definition-overriding: true
+logging:
+  level:
+    root: INFO

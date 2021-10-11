@@ -1,0 +1,84 @@
+{
+  "sdk_answer_template": {
+    "pronounceText": "",
+    "pronounceTextType": "application/text",
+    "items": [],
+    "suggestions": {
+      "buttons": []
+    }
+  },
+  "multiline_card": {
+    "card": {
+      "type": "list_card",
+      "cells": [
+        {
+          "type": "left_right_cell_view",
+          "left": {
+            "type": "simple_left_view",
+            "icon": {
+              "address": {
+                "type": "local",
+                "identificator": "safe_diagram"
+              },
+              "size": {
+                "width": "medium",
+                "height": "medium"
+              },
+              "margins": {
+                "left": "8x",
+                "top": "5x",
+                "right": "6x",
+                "bottom": "5x"
+              },
+              "tint_color": "solid_brand"
+            },
+            "title": {
+              "text": "",
+              "typeface": "body1",
+              "text_color": "default",
+              "max_lines": 0,
+              "margins": {
+                "top": "9x",
+                "bottom": "9x"
+              }
+            }
+          },
+          "right": {
+            "type": "disclosure_right_view",
+            "margins": {
+              "top": "8x",
+              "right": "4x",
+              "bottom": "8x"
+            }
+          },
+          "actions": [
+            {
+              "type": "text",
+              "text": ""
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "bubble_template": {
+    "bubble": {
+      "text": "text",
+      "markdown": true
+    }
+  },
+  "suggestion_text_template": {
+    "title": "",
+    "action": {
+      "deeplink": "",
+      "type": "deeplink"
+    }
+  },
+  "suggestion_deeplink_template": {
+    "title": "",
+    "action": {
+      "deeplink": "",
+      "type": "deeplink"
+    }
+  }
+}
