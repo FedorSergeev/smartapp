@@ -15,7 +15,7 @@ import ru.smartapp.core.common.model.ScenarioContext;
 
 @Slf4j
 @Service
-@ScenarioClass({"run_app"})
+@ScenarioClass("run_app")
 public class SomeDumbScenario implements Scenario {
     private ObjectMapper mapper;
     private SdkAnswerService sdkAnswerService;
