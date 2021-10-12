@@ -1,7 +1,6 @@
 package ru.smartapp.core.cache;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
@@ -14,9 +13,9 @@ import static java.util.Optional.ofNullable;
 import static ru.smartapp.core.config.Config.USER_SCENARIO_CACHE_NAME;
 
 // TODO: настроить время жизни кеша
+@Slf4j
 @Service("cacheAdapter")
 public class CacheAdapter {
-    private final Log log = LogFactory.getLog(getClass());
     @Autowired
     private CacheManager cacheManager;
 

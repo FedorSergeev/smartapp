@@ -3,8 +3,7 @@ package ru.smartapp.core.handlers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class IncomingMessageRouter {
-    private final Log log = LogFactory.getLog(getClass());
     private Map<MessageName, MessageHandler<? extends AbstractIncomingMessage>> incomingMessageMap;
     private ObjectMapper mapper;
     private MessageToSkillHandler<MessageToSkillDTO> messageToSkillHandler;
@@ -86,6 +85,7 @@ public class IncomingMessageRouter {
     public MessageHandler<? extends AbstractIncomingMessage>
     getIncomingMessageHandler(@NotNull JsonNode incomingMessage) {
         MessageName messageName = MessageName.valueOf(incomingMessage.get("messageName").asText());
+        log.info("PS DOS");
         return incomingMessageMap.get(messageName);
     }
 

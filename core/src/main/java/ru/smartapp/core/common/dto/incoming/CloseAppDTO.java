@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
+import ru.smartapp.core.common.dto.CharacterDTO;
 import ru.smartapp.core.common.dto.DeviceDTO;
 
 /**
@@ -19,7 +20,13 @@ public class CloseAppDTO extends AbstractIncomingMessage {
 
     @Nullable
     @Override
-    public DeviceDTO getDevice() {
+    public DeviceDTO getDeviceDTO() {
         return payload.getDevice();
+    }
+
+    @Nullable
+    @Override
+    public CharacterDTO getCharacterDTO() {
+        return payload.getCharacter();
     }
 }

@@ -1,8 +1,7 @@
 package ru.smartapp.core;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -18,9 +17,9 @@ import ru.smartapp.core.scenarios.Scenario;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class ScenarioExecutor {
-    private final Log log = LogFactory.getLog(getClass());
     private ApplicationContext context;
     private ScenariosMap scenarioMap;
     private CacheAdapter cacheAdapter;

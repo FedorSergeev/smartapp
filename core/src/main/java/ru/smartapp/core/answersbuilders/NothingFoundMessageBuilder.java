@@ -9,7 +9,7 @@ public class NothingFoundMessageBuilder implements AnswerBuilder {
     public NothingFoundDTO build(AbstractIncomingMessage incomingMessage) {
         NothingFoundDTO nothingFoundDTO = new NothingFoundDTO();
         NothingFoundPayloadDTO nothingFoundPayloadDTO = new NothingFoundPayloadDTO();
-        nothingFoundPayloadDTO.setDevice(incomingMessage.getDevice());
+        nothingFoundPayloadDTO.setDevice(incomingMessage.getDeviceDTO());
         nothingFoundDTO.setMessageId(incomingMessage.getMessageId());
         nothingFoundDTO.setMessageName(MessageName.NOTHING_FOUND.name());
         nothingFoundDTO.setSessionId(incomingMessage.getSessionId());

@@ -11,7 +11,7 @@ public class PolicyRunAppMessageBuilder implements AnswerBuilder {
     public PolicyRunAppDTO build(@NotNull String projectName, @NotNull JsonNode serverAction, AbstractIncomingMessage incomingMessage) {
         PolicyRunAppDTO policyRunAppDTO = new PolicyRunAppDTO();
         PolicyRunAppPayloadDTO policyRunAppPayloadDTO = new PolicyRunAppPayloadDTO();
-        policyRunAppPayloadDTO.setDevice(incomingMessage.getDevice());
+        policyRunAppPayloadDTO.setDevice(incomingMessage.getDeviceDTO());
         policyRunAppPayloadDTO.setProjectName(projectName);
         policyRunAppPayloadDTO.setServerAction(serverAction);
 

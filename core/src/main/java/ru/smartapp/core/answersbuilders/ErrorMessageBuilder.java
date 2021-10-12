@@ -18,7 +18,7 @@ public class ErrorMessageBuilder implements AnswerBuilder {
         errorPayloadDTO.setCode(code);
         errorPayloadDTO.setDescription(description);
         Optional<AbstractIncomingMessage> incomingMessageOptional = Optional.ofNullable(incomingMessage);
-        DeviceDTO device = incomingMessageOptional.map(AbstractIncomingMessage::getDevice).orElse(null);
+        DeviceDTO device = incomingMessageOptional.map(AbstractIncomingMessage::getDeviceDTO).orElse(null);
         errorPayloadDTO.setDevice(device);
         Long messageId = incomingMessageOptional.map(AbstractIncomingMessage::getMessageId).orElse(null);
         errorDTO.setMessageId(messageId);

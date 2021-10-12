@@ -17,7 +17,7 @@ public class AnswerToUserMessageBuilder implements AnswerBuilder {
     ) throws JsonProcessingException {
         ObjectNode payload = sdkAnswerBuilder.getJson();
         ObjectMapper mapper = getMapper();
-        JsonNode deviceJson = mapper.readTree(mapper.writeValueAsString(incomingMessage.getDevice()));
+        JsonNode deviceJson = mapper.readTree(mapper.writeValueAsString(incomingMessage.getDeviceDTO()));
         payload.set("device", deviceJson);
         AnswerToUserDTO answerToUserDTO = new AnswerToUserDTO();
         answerToUserDTO.setMessageId(incomingMessage.getMessageId());

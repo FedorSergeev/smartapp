@@ -15,5 +15,5 @@ public @interface ScenarioClass {
     /**
      * Holds scenario's id
      */
-    String[] value();
+    String value();
 }

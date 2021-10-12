@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,7 +36,7 @@ public class ScenarioClassMapBeanPostProcessor implements BeanPostProcessor {
             ScenarioClass[] annotations = bean.getClass().getDeclaredAnnotationsByType(ScenarioClass.class);
             for (ScenarioClass annotation : annotations) {
                 if (scenarios.containsKey(beanName)) {
-                    throw new RuntimeException(String.format("Duplicate scenario' beanName '%s' with scenario's annotation values %s", beanName, Arrays.toString(annotation.value())));
+                    throw new RuntimeException(String.format("Duplicate scenario' beanName '%s' with scenario's annotation value '%s'", beanName, annotation.value()));
                 }
                 scenarios.put(beanName, new ScenarioMap(bean.getClass(), annotation.value()));
             }
@@ -59,14 +58,13 @@ public class ScenarioClassMapBeanPostProcessor implements BeanPostProcessor {
                 Method put = scenarioMapBean.getClass().getDeclaredMethod("put", String.class, Class.class);
                 for (Map.Entry<String, ScenarioMap> scenarioEntry : scenarios.entrySet()) {
                     ScenarioMap map = scenarioEntry.getValue();
-                    for (String scenarioId : map.annotationValues) {
-                        try {
-                            if (get.invoke(scenarioMapBean, scenarioId) == null) {
-                                put.invoke(scenarioMapBean, scenarioId, map.beanClass);
-                            }
-                        } catch (IllegalAccessException | InvocationTargetException e) {
-                            throw new RuntimeException(e);
+                    String scenarioId = map.annotationValue;
+                    try {
+                        if (get.invoke(scenarioMapBean, scenarioId) == null) {
+                            put.invoke(scenarioMapBean, scenarioId, map.beanClass);
                         }
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        throw new RuntimeException(e);
                     }
                 }
             }
@@ -76,11 +74,11 @@ public class ScenarioClassMapBeanPostProcessor implements BeanPostProcessor {
 
     private static class ScenarioMap {
         public Class<?> beanClass;
-        public String[] annotationValues;
+        public String annotationValue;
 
-        public ScenarioMap(Class<?> beanClass, String[] annotationValues) {
+        public ScenarioMap(Class<?> beanClass, String annotationValue) {
             this.beanClass = beanClass;
-            this.annotationValues = annotationValues;
+            this.annotationValue = annotationValue;
         }
     }
 
