@@ -16,8 +16,8 @@ import ru.smartapp.core.common.model.User;
 @Slf4j
 @Component
 public class CloseAppHandler<I extends CloseAppDTO> extends AbstractMessageHandler<I> {
-    private ObjectMapper mapper;
-    private CacheAdapter cacheAdapter;
+    private final ObjectMapper mapper;
+    private final CacheAdapter cacheAdapter;
 
     @Autowired
     public CloseAppHandler(ObjectMapper mapper, CacheAdapter cacheAdapter) {

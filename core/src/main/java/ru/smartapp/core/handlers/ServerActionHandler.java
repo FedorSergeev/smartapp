@@ -19,10 +19,10 @@ import java.util.Optional;
 
 @Slf4j
 @Component
-public class ServerActionHandler<I extends ServerActionDTO> extends AbstractMessageHandler<I> {
-    private ScenarioExecutor scenarioExecutor;
-    private ObjectMapper mapper;
-    private CacheAdapter cacheAdapter;
+public class ServerActionHandler<I extends ServerActionDTO> extends AbstractMessageHandler {
+    private final ScenarioExecutor scenarioExecutor;
+    private final ObjectMapper mapper;
+    private final CacheAdapter cacheAdapter;
 
     @Autowired
     public ServerActionHandler(ObjectMapper mapper, ScenarioExecutor scenarioExecutor, CacheAdapter cacheAdapter) {

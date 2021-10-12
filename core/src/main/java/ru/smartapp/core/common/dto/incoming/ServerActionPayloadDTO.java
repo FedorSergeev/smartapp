@@ -11,7 +11,7 @@ import ru.smartapp.core.common.dto.DeviceDTO;
 
 @Getter
 @Setter
-public class ServerActionPayloadDTO {
+public class ServerActionPayloadDTO implements Payload {
     @JsonProperty("device")
     private DeviceDTO device;
     @JsonProperty("app_info")

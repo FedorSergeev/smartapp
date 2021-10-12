@@ -12,7 +12,7 @@ import ru.smartapp.core.common.dto.DeviceDTO;
  */
 @Getter
 @Setter
-public class ServerActionDTO extends AbstractIncomingMessage {
+public class ServerActionDTO extends AbstractIncomingMessage<ServerActionPayloadDTO> {
     @JsonProperty("payload")
     private ServerActionPayloadDTO payload;
 
@@ -25,5 +25,10 @@ public class ServerActionDTO extends AbstractIncomingMessage {
     @Override
     public CharacterDTO getCharacterDTO() {
         return payload.getCharacter();
+    }
+
+    @Override
+    public void setPayload(ServerActionPayloadDTO payload) {
+        this.payload = payload;
     }
 }

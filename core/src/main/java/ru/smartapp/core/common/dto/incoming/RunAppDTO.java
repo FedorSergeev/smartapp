@@ -12,7 +12,7 @@ import ru.smartapp.core.common.dto.DeviceDTO;
  */
 @Getter
 @Setter
-public class RunAppDTO extends AbstractIncomingMessage {
+public class RunAppDTO extends AbstractIncomingMessage<RunAppPayloadDTO> {
     @JsonProperty("payload")
     private RunAppPayloadDTO payload;
 

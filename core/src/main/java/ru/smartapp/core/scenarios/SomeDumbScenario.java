@@ -18,8 +18,8 @@ import ru.smartapp.core.common.model.ScenarioContext;
 @Service
 @ScenarioClass("run_app")
 public class SomeDumbScenario implements Scenario {
-    private ObjectMapper mapper;
-    private SdkAnswerService sdkAnswerService;
+    private final ObjectMapper mapper;
+    private final SdkAnswerService sdkAnswerService;
 
     @Autowired
     public SomeDumbScenario(ObjectMapper mapper, SdkAnswerService sdkAnswerService) {

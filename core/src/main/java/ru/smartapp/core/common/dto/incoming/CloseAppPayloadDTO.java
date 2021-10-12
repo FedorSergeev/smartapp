@@ -10,11 +10,11 @@ import ru.smartapp.core.common.dto.CharacterDTO;
 import ru.smartapp.core.common.dto.DeviceDTO;
 
 /**
- * cm {@link MessageToSkillPayloadDTO}
+ * @see {@link MessageToSkillPayloadDTO}
  */
 @Getter
 @Setter
-public class CloseAppPayloadDTO {
+public class CloseAppPayloadDTO implements Payload {
     @JsonProperty("applicationId")
     private String applicationId;
     @JsonProperty("appversionId")

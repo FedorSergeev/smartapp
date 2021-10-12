@@ -1,5 +1,5 @@
 spring:
-#  profiles.active: kafka
+  profiles.active: kafka, rest
   main:
     allow-bean-definition-overriding: true
 logging:

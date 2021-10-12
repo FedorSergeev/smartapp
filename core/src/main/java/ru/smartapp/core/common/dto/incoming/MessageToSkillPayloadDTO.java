@@ -11,7 +11,7 @@ import ru.smartapp.core.common.dto.DeviceDTO;
 
 @Getter
 @Setter
-public class MessageToSkillPayloadDTO {
+public class MessageToSkillPayloadDTO implements Payload {
     @JsonProperty("applicationId")
     private String applicationId;
     @JsonProperty("appversionId")

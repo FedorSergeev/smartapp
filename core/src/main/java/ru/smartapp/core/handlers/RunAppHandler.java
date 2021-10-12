@@ -17,9 +17,9 @@ import ru.smartapp.core.common.model.ScenarioContext;
 @Slf4j
 @Component
 public class RunAppHandler<I extends RunAppDTO> extends AbstractMessageHandler<I> {
-    private ScenarioExecutor scenarioExecutor;
-    private ObjectMapper mapper;
-    private CacheAdapter cacheAdapter;
+    private final ScenarioExecutor scenarioExecutor;
+    private final ObjectMapper mapper;
+    private final CacheAdapter cacheAdapter;
 
     @Autowired
     public RunAppHandler(ObjectMapper mapper, ScenarioExecutor scenarioExecutor, CacheAdapter cacheAdapter) {

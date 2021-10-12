@@ -14,11 +14,11 @@ import ru.smartapp.core.common.dto.outgoing.OutgoingMessage;
 import ru.smartapp.core.common.model.ScenarioContext;
 
 @Component
-public class MessageToSkillHandler<I extends MessageToSkillDTO> extends AbstractMessageHandler<I> {
+public class MessageToSkillHandler extends AbstractMessageHandler {
 
-    private ScenarioExecutor scenarioExecutor;
-    private ObjectMapper mapper;
-    private CacheAdapter cacheAdapter;
+    private final ScenarioExecutor scenarioExecutor;
+    private final ObjectMapper mapper;
+    private final CacheAdapter cacheAdapter;
 
     @Autowired
     public MessageToSkillHandler(
@@ -35,13 +35,12 @@ public class MessageToSkillHandler<I extends MessageToSkillDTO> extends Abstract
     }
 
     @Override
-    I convert(JsonNode incomingMessage) throws JsonProcessingException {
-        return mapper.readValue(mapper.writeValueAsString(incomingMessage), new TypeReference<I>() {
-        });
+    MessageToSkillDTO convert(JsonNode incomingMessage) throws JsonProcessingException {
+        return mapper.readValue(mapper.writeValueAsString(incomingMessage), MessageToSkillDTO.class);
     }
 
     private ScenarioContext buildScenarioContext(JsonNode incomingMessage) throws JsonProcessingException {
-        I dto = convert(incomingMessage);
+        MessageToSkillDTO dto = convert(incomingMessage);
         return new ScenarioContext(dto.getPayload().getIntent(), dto);
     }
 }

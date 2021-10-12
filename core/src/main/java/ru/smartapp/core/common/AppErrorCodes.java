@@ -3,7 +3,7 @@ package ru.smartapp.core.common;
 public enum AppErrorCodes {
     ERROR(-1);
 
-    private Long code;
+    private final Long code;
 
     AppErrorCodes(int i) {
         code = (long) i;

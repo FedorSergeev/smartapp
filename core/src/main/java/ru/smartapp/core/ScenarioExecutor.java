@@ -21,9 +21,9 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class ScenarioExecutor {
-    private ApplicationContext context;
-    private ScenariosMap scenarioMap;
-    private CacheAdapter cacheAdapter;
+    private final ApplicationContext context;
+    private final ScenariosMap scenarioMap;
+    private final CacheAdapter cacheAdapter;
 
     @Autowired
     public ScenarioExecutor(

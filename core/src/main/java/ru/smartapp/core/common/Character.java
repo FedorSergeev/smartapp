@@ -9,10 +9,10 @@ public enum Character {
     APHENA_SM("athena", "Афина", "female", "official"),
     JOY("joy", "Джой", "female", "no_official");
 
-    private String id;
-    private String name;
-    private String gender;
-    private String appeal;
+    private final String id;
+    private final String name;
+    private final String gender;
+    private final String appeal;
 
     Character(String id, String name, String gender, String appeal) {
         this.id = id;

@@ -6,6 +6,7 @@ import ru.smartapp.core.common.dto.Message;
 /**
  * Interface for incoming messages
  */
-public interface IncomingMessage extends Message {
-
+public interface IncomingMessage<T extends Payload> extends Message {
+    T getPayload();
+    void setPayload(T payload);
 }
