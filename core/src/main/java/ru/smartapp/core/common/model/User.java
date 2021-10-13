@@ -19,7 +19,7 @@ public class User {
     private String sub;
     private String userChannel;
 
-    public <T extends AbstractIncomingMessage> User(@Nullable T incomingMessage) {
+    public User(@Nullable AbstractIncomingMessage incomingMessage) {
         Optional<UuidDTO> optionalUuidDTO = Optional.ofNullable(incomingMessage)
                 .map(AbstractMessage::getUuidDTO);
         this.userId = optionalUuidDTO.map(UuidDTO::getUserId).orElse(Strings.EMPTY);

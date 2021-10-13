@@ -40,8 +40,8 @@ public class MessageToSkillHandler<I extends MessageToSkillDTO> extends Abstract
         });
     }
 
-    private ScenarioContext<I> buildScenarioContext(JsonNode incomingMessage) throws JsonProcessingException {
+    private ScenarioContext buildScenarioContext(JsonNode incomingMessage) throws JsonProcessingException {
         I dto = convert(incomingMessage);
-        return new ScenarioContext<>(dto.getPayload().getIntent(), dto);
+        return new ScenarioContext(dto.getPayload().getIntent(), dto);
     }
 }

@@ -28,7 +28,7 @@ public class SomeDumbScenario implements Scenario {
     }
 
     @Override
-    public Mono<AbstractOutgoingMessage> run(ScenarioContext<? extends AbstractIncomingMessage> context) throws JsonProcessingException {
+    public Mono<AbstractOutgoingMessage> run(ScenarioContext context) throws JsonProcessingException {
         String stateId = context.getStateId();
         if (stateId == null) {
             return hello(context);
@@ -36,7 +36,7 @@ public class SomeDumbScenario implements Scenario {
         return bye(context);
     }
 
-    private Mono<AbstractOutgoingMessage> hello(ScenarioContext<? extends AbstractIncomingMessage> context) throws JsonProcessingException {
+    private Mono<AbstractOutgoingMessage> hello(ScenarioContext context) throws JsonProcessingException {
         AbstractIncomingMessage incomingMessage = context.getMessage();
         SdkAnswerBuilder answerBuilder = sdkAnswerService.getSdkAnswerBuilder();
         answerBuilder
@@ -49,7 +49,7 @@ public class SomeDumbScenario implements Scenario {
         return Mono.just(new AnswerToUserMessageBuilder().build(answerBuilder, incomingMessage));
     }
 
-    private Mono<AbstractOutgoingMessage> bye(ScenarioContext<? extends AbstractIncomingMessage> context) throws JsonProcessingException {
+    private Mono<AbstractOutgoingMessage> bye(ScenarioContext context) throws JsonProcessingException {
         AbstractIncomingMessage incomingMessage = context.getMessage();
         SdkAnswerBuilder answerBuilder = sdkAnswerService.getSdkAnswerBuilder();
         answerBuilder

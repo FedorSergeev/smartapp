@@ -36,7 +36,7 @@ public class HowSaveForRetirementScenario implements Scenario {
     }
 
     @Override
-    public Mono<AbstractOutgoingMessage> run(ScenarioContext<? extends AbstractIncomingMessage> context) throws JsonProcessingException {
+    public Mono<AbstractOutgoingMessage> run(ScenarioContext context) throws JsonProcessingException {
         JsonNode answerJsonNode = scenariosTextsService.getTextMap().get("how_to_save_for_retirement").get("answer_no_client_profile");
         JsonNode sberAnswer = answerJsonNode.withArray("sber").get(0);
         String text = sberAnswer.get("text").asText();

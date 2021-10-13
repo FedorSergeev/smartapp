@@ -29,7 +29,7 @@ public class SomeDumbScenarioTest {
     @Test
     public void testHello() throws IOException {
         MessageToSkillDTO dto = mapper.readValue(messageToSkillResource.getInputStream(), MessageToSkillDTO.class);
-        ScenarioContext<MessageToSkillDTO> context = new ScenarioContext<>(dto.getPayload().getIntent(), dto);
+        ScenarioContext context = new ScenarioContext(dto.getPayload().getIntent(), dto);
         AbstractOutgoingMessage answer = someDumbScenario.run(context).block();
         assertNotNull(answer);
         assertEquals(MessageName.ANSWER_TO_USER.name(), answer.getMessageName());
@@ -46,7 +46,7 @@ public class SomeDumbScenarioTest {
     @Test
     public void testBye() throws IOException {
         MessageToSkillDTO dto = mapper.readValue(messageToSkillResource.getInputStream(), MessageToSkillDTO.class);
-        ScenarioContext<MessageToSkillDTO> context = new ScenarioContext<>(dto.getPayload().getIntent(), dto);
+        ScenarioContext context = new ScenarioContext(dto.getPayload().getIntent(), dto);
         AbstractOutgoingMessage answer1 = someDumbScenario.run(context).block();
         context.setMessage(dto);
         AbstractOutgoingMessage answer2 = someDumbScenario.run(context).block();

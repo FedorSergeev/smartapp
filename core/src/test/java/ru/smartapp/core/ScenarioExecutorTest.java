@@ -31,7 +31,7 @@ public class ScenarioExecutorTest {
     @Test
     public void testSomeDumbScenario() throws IOException {
         MessageToSkillDTO message = getMessage();
-        ScenarioContext<MessageToSkillDTO> scenarioContext = new ScenarioContext<>(message.getPayload().getIntent(), message);
+        ScenarioContext scenarioContext = new ScenarioContext(message.getPayload().getIntent(), message);
         OutgoingMessage answer = scenarioExecutor.run(scenarioContext).block();
 
         JsonNode response = mapper.readTree(mapper.writeValueAsString(answer));
@@ -41,7 +41,7 @@ public class ScenarioExecutorTest {
 
         message = getMessage();
         message.getPayload().setNewSession(false);
-        scenarioContext = new ScenarioContext<>(message.getPayload().getIntent(), message);
+        scenarioContext = new ScenarioContext(message.getPayload().getIntent(), message);
         answer = scenarioExecutor.run(scenarioContext).block();
 
         response = mapper.readTree(mapper.writeValueAsString(answer));
@@ -54,7 +54,7 @@ public class ScenarioExecutorTest {
     public void test() throws IOException {
         MessageToSkillDTO message = getMessage();
         OutgoingMessage answer =
-                scenarioExecutor.run(new ScenarioContext<>(message.getPayload().getIntent(), message)).block();
+                scenarioExecutor.run(new ScenarioContext(message.getPayload().getIntent(), message)).block();
         JsonNode response = mapper.readTree(mapper.writeValueAsString(answer));
         assertNotNull(response);
     }

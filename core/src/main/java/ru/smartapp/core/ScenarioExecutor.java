@@ -10,8 +10,6 @@ import reactor.core.publisher.Mono;
 import ru.smartapp.core.answersbuilders.NothingFoundMessageBuilder;
 import ru.smartapp.core.cache.CacheAdapter;
 import ru.smartapp.core.common.dao.UserScenarioDAO;
-import ru.smartapp.core.common.dto.incoming.AbstractIncomingMessage;
-import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
 import ru.smartapp.core.common.dto.outgoing.AnswerToUserDTO;
 import ru.smartapp.core.common.dto.outgoing.NothingFoundDTO;
 import ru.smartapp.core.common.dto.outgoing.OutgoingMessage;
@@ -46,8 +44,7 @@ public class ScenarioExecutor {
      * @return {@link Scenario}'s answer
      */
     @NotNull
-    public <INCOMING extends AbstractIncomingMessage>
-    Mono<OutgoingMessage> run(ScenarioContext<INCOMING> scenarioContext) throws JsonProcessingException {
+    public Mono<OutgoingMessage> run(ScenarioContext scenarioContext) throws JsonProcessingException {
         String intent = scenarioContext.getIntent();
         Class<? extends Scenario> scenarioClass = scenarioMap.get(intent);
         if (scenarioClass == null) {
@@ -61,8 +58,7 @@ public class ScenarioExecutor {
                 .map(outgoingMessage -> outgoingMessage);
     }
 
-    private <INCOMING extends AbstractIncomingMessage, OUTGOING extends AbstractOutgoingMessage>
-    void updateCache(ScenarioContext<INCOMING> scenarioContext, OUTGOING outgoingMessage) {
+    private void updateCache(ScenarioContext scenarioContext, OutgoingMessage outgoingMessage) {
         if (isFinished(outgoingMessage)) {
             cacheAdapter.deleteUserScenario(scenarioContext.getUser().getUserUniqueId());
         } else {
@@ -75,7 +71,7 @@ public class ScenarioExecutor {
         }
     }
 
-    private <OUTGOING extends AbstractOutgoingMessage> boolean isFinished(OUTGOING outgoingMessage) {
+    private boolean isFinished(OutgoingMessage outgoingMessage) {
         if (outgoingMessage instanceof AnswerToUserDTO) {
             AnswerToUserDTO answerToUserDTO = (AnswerToUserDTO) outgoingMessage;
             return Optional.of(answerToUserDTO)

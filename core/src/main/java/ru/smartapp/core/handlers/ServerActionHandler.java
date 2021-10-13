@@ -41,7 +41,7 @@ public class ServerActionHandler<I extends ServerActionDTO> extends AbstractMess
         });
     }
 
-    private ScenarioContext<I> buildScenarioContext(JsonNode incomingMessage) throws JsonProcessingException {
+    private ScenarioContext buildScenarioContext(JsonNode incomingMessage) throws JsonProcessingException {
         I dto = convert(incomingMessage);
         // TODO откуда брать айди сценария
         String intent = Optional.ofNullable(dto.getPayload())
@@ -50,6 +50,6 @@ public class ServerActionHandler<I extends ServerActionDTO> extends AbstractMess
                 .map(jsonNode -> jsonNode.get("intent"))
                 .map(JsonNode::asText)
                 .orElse(null);
-        return new ScenarioContext<>(intent, dto);
+        return new ScenarioContext(intent, dto);
     }
 }
