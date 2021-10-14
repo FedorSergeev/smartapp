@@ -6,13 +6,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 import ru.smartapp.core.ScenarioExecutor;
 import ru.smartapp.core.cache.CacheAdapter;
 import ru.smartapp.core.common.dto.incoming.MessageToSkillDTO;
-import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
+import ru.smartapp.core.common.dto.outgoing.OutgoingMessage;
 import ru.smartapp.core.common.model.ScenarioContext;
-
-import java.util.Optional;
 
 @Component
 public class MessageToSkillHandler<I extends MessageToSkillDTO> extends AbstractMessageHandler<I> {
@@ -31,8 +30,8 @@ public class MessageToSkillHandler<I extends MessageToSkillDTO> extends Abstract
         this.cacheAdapter = cacheAdapter;
     }
 
-    public Optional<AbstractOutgoingMessage> handle(JsonNode incomingMessage) throws JsonProcessingException {
-        return Optional.of(scenarioExecutor.run(buildScenarioContext(incomingMessage)));
+    public Mono<OutgoingMessage> handle(JsonNode incomingMessage) throws JsonProcessingException {
+        return scenarioExecutor.run(buildScenarioContext(incomingMessage));
     }
 
     @Override
@@ -41,8 +40,8 @@ public class MessageToSkillHandler<I extends MessageToSkillDTO> extends Abstract
         });
     }
 
-    private ScenarioContext<I> buildScenarioContext(JsonNode incomingMessage) throws JsonProcessingException {
+    private ScenarioContext buildScenarioContext(JsonNode incomingMessage) throws JsonProcessingException {
         I dto = convert(incomingMessage);
-        return new ScenarioContext<>(dto.getPayload().getIntent(), dto);
+        return new ScenarioContext(dto.getPayload().getIntent(), dto);
     }
 }

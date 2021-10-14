@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import ru.smartapp.core.ScenariosMap;
 import ru.smartapp.core.common.MessageName;
+import ru.smartapp.core.common.dto.outgoing.OutgoingMessage;
 
 import java.io.IOException;
 
@@ -35,28 +36,32 @@ public class IncomingMessageRouterTest {
 
     @Test
     public void testNull() throws IOException {
-        JsonNode response = incomingMessageRouter.handle(null).orElse(null);
+        OutgoingMessage outgoingMessage = incomingMessageRouter.handle(null).block();
+        JsonNode response = mapper.readTree(mapper.writeValueAsString(outgoingMessage));
         assertNotNull(response);
         assertEquals(MessageName.ERROR.name(), response.get("messageName").asText());
     }
 
     @Test
     public void testEmptyString() throws IOException {
-        JsonNode response = incomingMessageRouter.handle(mapper.readTree("")).orElse(null);
+        OutgoingMessage outgoingMessage = incomingMessageRouter.handle(mapper.readTree("")).block();
+        JsonNode response = mapper.readTree(mapper.writeValueAsString(outgoingMessage));
         assertNotNull(response);
         assertEquals(MessageName.ERROR.name(), response.get("messageName").asText());
     }
 
     @Test
     public void testEmptyJson() throws IOException {
-        JsonNode response = incomingMessageRouter.handle(mapper.readTree("{}")).orElse(null);
+        OutgoingMessage outgoingMessage = incomingMessageRouter.handle(mapper.readTree("{}")).block();
+        JsonNode response = mapper.readTree(mapper.writeValueAsString(outgoingMessage));
         assertNotNull(response);
         assertEquals(MessageName.ERROR.name(), response.get("messageName").asText());
     }
 
     @Test
     public void testMessageToSkill() throws IOException {
-        JsonNode response = incomingMessageRouter.handle(mapper.readTree(messageToSkillResource.getInputStream())).orElse(null);
+        OutgoingMessage outgoingMessage = incomingMessageRouter.handle(mapper.readTree(messageToSkillResource.getInputStream())).block();
+        JsonNode response = mapper.readTree(mapper.writeValueAsString(outgoingMessage));
         assertNotNull(response);
         assertNotEquals(MessageName.ERROR.name(), response.get("messageName").asText());
         assertNotEquals(MessageName.NOTHING_FOUND.name(), response.get("messageName").asText());
@@ -64,13 +69,14 @@ public class IncomingMessageRouterTest {
 
     @Test
     public void testCloseApp() throws IOException {
-        JsonNode response = incomingMessageRouter.handle(mapper.readTree(closeAppResource.getInputStream())).orElse(null);
-        assertNull(response);
+        OutgoingMessage outgoingMessage = incomingMessageRouter.handle(mapper.readTree(closeAppResource.getInputStream())).block();
+        assertNull(outgoingMessage);
     }
 
     @Test
     public void testRunApp() throws IOException {
-        JsonNode response = incomingMessageRouter.handle(mapper.readTree(runAppResource.getInputStream())).orElse(null);
+        OutgoingMessage outgoingMessage = incomingMessageRouter.handle(mapper.readTree(runAppResource.getInputStream())).block();
+        JsonNode response = mapper.readTree(mapper.writeValueAsString(outgoingMessage));
         assertNotNull(response);
         assertNotEquals(MessageName.ERROR.name(), response.get("messageName").asText());
         assertNotEquals(MessageName.NOTHING_FOUND.name(), response.get("messageName").asText());
@@ -79,7 +85,8 @@ public class IncomingMessageRouterTest {
     // TODO: исправить логику обработки serverAction
 //    @Test
 //    public void testServerAction() throws IOException {
-//        JsonNode response = incomingMessageRouter.handle(mapper.readTree(serverActionResource.getInputStream())).orElse(null);
+//        OutgoingMessage outgoingMessage = incomingMessageRouter.handle(mapper.readTree(serverActionResource.getInputStream())).block();
+//        JsonNode response = mapper.readTree(mapper.writeValueAsString(outgoingMessage));
 //        assertNotNull(response);
 //        assertNotEquals(MessageName.ERROR.name(), response.get("messageName").asText());
 //        assertNotEquals(MessageName.NOTHING_FOUND.name(), response.get("messageName").asText());

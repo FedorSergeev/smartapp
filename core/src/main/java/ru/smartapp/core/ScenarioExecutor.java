@@ -6,12 +6,13 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 import ru.smartapp.core.answersbuilders.NothingFoundMessageBuilder;
 import ru.smartapp.core.cache.CacheAdapter;
 import ru.smartapp.core.common.dao.UserScenarioDAO;
-import ru.smartapp.core.common.dto.incoming.AbstractIncomingMessage;
-import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
 import ru.smartapp.core.common.dto.outgoing.AnswerToUserDTO;
+import ru.smartapp.core.common.dto.outgoing.NothingFoundDTO;
+import ru.smartapp.core.common.dto.outgoing.OutgoingMessage;
 import ru.smartapp.core.common.model.ScenarioContext;
 import ru.smartapp.core.scenarios.Scenario;
 
@@ -43,16 +44,21 @@ public class ScenarioExecutor {
      * @return {@link Scenario}'s answer
      */
     @NotNull
-    public <INCOMING extends AbstractIncomingMessage>
-    AbstractOutgoingMessage run(ScenarioContext<INCOMING> scenarioContext) throws JsonProcessingException {
+    public Mono<OutgoingMessage> run(ScenarioContext scenarioContext) throws JsonProcessingException {
         String intent = scenarioContext.getIntent();
         Class<? extends Scenario> scenarioClass = scenarioMap.get(intent);
         if (scenarioClass == null) {
             log.error(String.format("There is no scenario with id %s", intent));
-            return new NothingFoundMessageBuilder().build(scenarioContext.getMessage());
+            NothingFoundDTO nothingFoundDTO = new NothingFoundMessageBuilder().build(scenarioContext.getMessage());
+            return Mono.just(nothingFoundDTO);
         }
         Scenario scenario = context.getBean(scenarioClass);
-        AbstractOutgoingMessage outgoingMessage = scenario.run(scenarioContext);
+        return scenario.run(scenarioContext)
+                .doOnNext(outgoingMessage -> updateCache(scenarioContext, outgoingMessage))
+                .map(outgoingMessage -> outgoingMessage);
+    }
+
+    private void updateCache(ScenarioContext scenarioContext, OutgoingMessage outgoingMessage) {
         if (isFinished(outgoingMessage)) {
             cacheAdapter.deleteUserScenario(scenarioContext.getUser().getUserUniqueId());
         } else {
@@ -63,13 +69,12 @@ public class ScenarioExecutor {
             userScenarioDAO.setScenarioData(scenarioContext.getScenarioData());
             cacheAdapter.updateUserScenario(userScenarioDAO);
         }
-        return outgoingMessage;
     }
 
-    private <OUTGOING extends AbstractOutgoingMessage> boolean isFinished(OUTGOING outgoingMessage) {
+    private boolean isFinished(OutgoingMessage outgoingMessage) {
         if (outgoingMessage instanceof AnswerToUserDTO) {
             AnswerToUserDTO answerToUserDTO = (AnswerToUserDTO) outgoingMessage;
-            return Optional.ofNullable(answerToUserDTO)
+            return Optional.of(answerToUserDTO)
                     .map(AnswerToUserDTO::getPayload)
                     .filter(json -> json.hasNonNull("finished"))
                     .map(json -> json.get("finished").asBoolean())

@@ -30,8 +30,8 @@ public class HowSaveForRetirementTest {
     public void testMessage() throws IOException {
         MessageToSkillDTO dto = mapper.readValue(messageToSkillResource.getInputStream(), MessageToSkillDTO.class);
         dto.getPayload().setIntent("how_to_save_for_retirement");
-        ScenarioContext<MessageToSkillDTO> context = new ScenarioContext<>(dto.getPayload().getIntent(), dto);
-        AbstractOutgoingMessage answer = howSaveForRetirementScenario.run(context);
+        ScenarioContext context = new ScenarioContext(dto.getPayload().getIntent(), dto);
+        AbstractOutgoingMessage answer = howSaveForRetirementScenario.run(context).block();
         assertNotNull(answer);
         assertEquals(MessageName.ANSWER_TO_USER.name(), answer.getMessageName());
         assertEquals(dto.getSessionId(), answer.getSessionId());

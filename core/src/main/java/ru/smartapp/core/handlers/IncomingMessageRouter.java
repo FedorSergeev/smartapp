@@ -8,17 +8,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 import ru.smartapp.core.answersbuilders.ErrorMessageBuilder;
 import ru.smartapp.core.common.AppErrorCodes;
 import ru.smartapp.core.common.MessageName;
 import ru.smartapp.core.common.dto.incoming.*;
-import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
+import ru.smartapp.core.common.dto.outgoing.ErrorDTO;
+import ru.smartapp.core.common.dto.outgoing.OutgoingMessage;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -85,25 +86,14 @@ public class IncomingMessageRouter {
     public MessageHandler<? extends AbstractIncomingMessage>
     getIncomingMessageHandler(@NotNull JsonNode incomingMessage) {
         MessageName messageName = MessageName.valueOf(incomingMessage.get("messageName").asText());
-        log.info("PS DOS");
         return incomingMessageMap.get(messageName);
     }
 
-    public Optional<JsonNode> handle(JsonNode incomingMessage) {
-        JsonNode result = null;
-        try {
-            if (!validateIncomingMessage(incomingMessage)) {
-                return Optional.ofNullable(mapper.readTree(mapper.writeValueAsString(new ErrorMessageBuilder().build(AppErrorCodes.ERROR.getCode(), "", null))));
-            }
-            Optional<? extends AbstractOutgoingMessage> optional =
-                    getIncomingMessageHandler(incomingMessage).handle(incomingMessage);
-            if (optional.isPresent()) {
-                AbstractOutgoingMessage answer = optional.get();
-                result = mapper.readTree(mapper.writeValueAsString(answer));
-            }
-        } catch (JsonProcessingException e) {
-            log.error("Json cast exception", e);
+    public Mono<OutgoingMessage> handle(JsonNode incomingMessage) throws JsonProcessingException {
+        if (!validateIncomingMessage(incomingMessage)) {
+            ErrorDTO errorDTO = new ErrorMessageBuilder().build(AppErrorCodes.ERROR.getCode(), "", null);
+            return Mono.just(errorDTO);
         }
-        return Optional.ofNullable(result);
+        return getIncomingMessageHandler(incomingMessage).handle(incomingMessage);
     }
 }

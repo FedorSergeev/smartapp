@@ -20,7 +20,7 @@ import java.util.Optional;
 @Getter
 @Setter
 @Slf4j
-public class ScenarioContext<T extends AbstractIncomingMessage> {
+public class ScenarioContext {
     private User user;
     private String intent;
     private Character character;
@@ -28,11 +28,11 @@ public class ScenarioContext<T extends AbstractIncomingMessage> {
     private String stateId;
     @Nullable
     private ScenarioDataDAO scenarioData;
-    private T message;
+    private AbstractIncomingMessage message;
 
     public ScenarioContext(
             String intent,
-            T message
+            AbstractIncomingMessage message
     ) {
         this.user = new User(message);
         this.intent = intent;
@@ -55,7 +55,7 @@ public class ScenarioContext<T extends AbstractIncomingMessage> {
         return SpringContext.getBean(CacheAdapter.class);
     }
 
-    private boolean isNewSession(T message) {
+    private boolean isNewSession(AbstractIncomingMessage message) {
         if (message instanceof MessageToSkillDTO) {
             MessageToSkillDTO messageToSkillDTO = (MessageToSkillDTO) message;
             return Optional.of(messageToSkillDTO).map(MessageToSkillDTO::getPayload).map(MessageToSkillPayloadDTO::getNewSession).orElse(false);
@@ -63,7 +63,7 @@ public class ScenarioContext<T extends AbstractIncomingMessage> {
         return false;
     }
 
-    private Character getCharacterFromMessage(T message) {
+    private Character getCharacterFromMessage(AbstractIncomingMessage message) {
         Optional<String> optionalCharacterId = Optional.ofNullable(message.getCharacterDTO()).map(CharacterDTO::getId);
         if (!optionalCharacterId.isPresent()) {
             log.warn(String.format("Expected character ids: %s, got null", Arrays.toString(Character.values())));

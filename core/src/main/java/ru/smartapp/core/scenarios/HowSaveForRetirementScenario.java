@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 import ru.smartapp.core.ScenariosTextsService;
 import ru.smartapp.core.annotations.ScenarioClass;
 import ru.smartapp.core.answersbuilders.AnswerToUserMessageBuilder;
@@ -35,7 +36,7 @@ public class HowSaveForRetirementScenario implements Scenario {
     }
 
     @Override
-    public AbstractOutgoingMessage run(ScenarioContext<? extends AbstractIncomingMessage> context) throws JsonProcessingException {
+    public Mono<AbstractOutgoingMessage> run(ScenarioContext context) throws JsonProcessingException {
         JsonNode answerJsonNode = scenariosTextsService.getTextMap().get("how_to_save_for_retirement").get("answer_no_client_profile");
         JsonNode sberAnswer = answerJsonNode.withArray("sber").get(0);
         String text = sberAnswer.get("text").asText();
@@ -48,6 +49,6 @@ public class HowSaveForRetirementScenario implements Scenario {
                 .addButtonWithText("Не нажимай")
                 .addSuggestionText("Что ты умеешь?")
                 .finished();
-        return new AnswerToUserMessageBuilder().build(answerBuilder, incomingMessage);
+        return Mono.just(new AnswerToUserMessageBuilder().build(answerBuilder, incomingMessage));
     }
 }
