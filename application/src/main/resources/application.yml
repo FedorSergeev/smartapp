@@ -1,7 +1,11 @@
 spring:
-#  profiles.active: kafka
+  profiles.active: kafka,rest
   main:
     allow-bean-definition-overriding: true
 logging:
   level:
     root: INFO
+smartapp:
+  server:
+    resources:
+      worker_count: ${SMARTAPP_SERVER_RESOURCES_WORKER_COUNT:#{16}}
