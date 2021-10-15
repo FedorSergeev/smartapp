@@ -26,9 +26,4 @@ public class ServerActionDto extends AbstractIncomingMessage<ServerActionPayload
     public CharacterDto getCharacterDto() {
         return payload.getCharacter();
     }
-
-    @Override
-    public void setPayload(ServerActionPayloadDto payload) {
-        this.payload = payload;
-    }
 }

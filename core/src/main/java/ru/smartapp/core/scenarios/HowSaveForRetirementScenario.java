@@ -14,7 +14,8 @@ import ru.smartapp.core.answersbuilders.AnswerToUserMessageBuilder;
 import ru.smartapp.core.answersbuilders.NothingFoundMessageBuilder;
 import ru.smartapp.core.answersbuilders.sdkanswerbuilder.SdkAnswerBuilder;
 import ru.smartapp.core.answersbuilders.sdkanswerbuilder.SdkAnswerService;
-import ru.smartapp.core.common.dto.incoming.AbstractIncomingMessage;
+import ru.smartapp.core.common.dto.incoming.IncomingMessage;
+import ru.smartapp.core.common.dto.incoming.Payload;
 import ru.smartapp.core.common.dto.outgoing.OutgoingMessage;
 import ru.smartapp.core.common.integrationdto.ServiceConfig;
 import ru.smartapp.core.common.model.ScenarioContext;
@@ -59,7 +60,7 @@ public class HowSaveForRetirementScenario implements Scenario {
                     JsonNode sberAnswer = answerJsonNode.withArray("sber").get(0);
                     String text = sberAnswer.get("text").asText();
                     String voice = sberAnswer.get("voice").asText();
-                    AbstractIncomingMessage incomingMessage = context.getMessage();
+                    IncomingMessage<Payload> incomingMessage = context.getMessage();
                     SdkAnswerBuilder answerBuilder = sdkAnswerService.getSdkAnswerBuilder();
                     answerBuilder
                             .addText(text)

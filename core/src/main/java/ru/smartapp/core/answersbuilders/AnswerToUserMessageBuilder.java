@@ -6,14 +6,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import ru.smartapp.core.answersbuilders.sdkanswerbuilder.SdkAnswerBuilder;
 import ru.smartapp.core.common.MessageName;
-import ru.smartapp.core.common.dto.incoming.AbstractIncomingMessage;
+import ru.smartapp.core.common.dto.incoming.IncomingMessage;
 import ru.smartapp.core.common.dto.outgoing.AnswerToUserDto;
 import ru.smartapp.core.config.SpringContext;
 
 public class AnswerToUserMessageBuilder implements AnswerBuilder {
     public AnswerToUserDto build(
             SdkAnswerBuilder sdkAnswerBuilder,
-            AbstractIncomingMessage incomingMessage
+            IncomingMessage incomingMessage
     ) throws JsonProcessingException {
         ObjectNode payload = sdkAnswerBuilder.getJson();
         ObjectMapper mapper = getMapper();
