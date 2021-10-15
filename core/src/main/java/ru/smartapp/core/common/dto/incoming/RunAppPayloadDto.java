@@ -5,17 +5,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
-import ru.smartapp.core.common.dto.AppInfoDTO;
-import ru.smartapp.core.common.dto.CharacterDTO;
-import ru.smartapp.core.common.dto.DeviceDTO;
+import ru.smartapp.core.common.dto.AppInfoDto;
+import ru.smartapp.core.common.dto.CharacterDto;
+import ru.smartapp.core.common.dto.DeviceDto;
 
 @Getter
 @Setter
-public class RunAppPayloadDTO implements Payload {
+public class RunAppPayloadDto implements Payload {
     @JsonProperty("device")
-    private DeviceDTO device;
+    private DeviceDto device;
     @JsonProperty("app_info")
-    private AppInfoDTO appInfo;
+    private AppInfoDto appInfo;
     /**
      * Имя смартапа, которое задается при создании проекта и отображается в каталоге приложений.
      */
@@ -29,7 +29,7 @@ public class RunAppPayloadDTO implements Payload {
     @JsonProperty("intent")
     private String intent;
     @JsonProperty("character")
-    private CharacterDTO character;
+    private CharacterDto character;
     /**
      * Возможные стратегии смартапа.
      */

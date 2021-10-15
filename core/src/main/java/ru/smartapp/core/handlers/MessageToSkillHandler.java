@@ -1,15 +1,13 @@
 package ru.smartapp.core.handlers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import ru.smartapp.core.ScenarioExecutor;
-import ru.smartapp.core.cache.CacheAdapter;
-import ru.smartapp.core.common.dto.incoming.MessageToSkillDTO;
+import ru.smartapp.core.common.dto.incoming.MessageToSkillDto;
 import ru.smartapp.core.common.dto.outgoing.OutgoingMessage;
 import ru.smartapp.core.common.model.ScenarioContext;
 
@@ -18,16 +16,13 @@ public class MessageToSkillHandler extends AbstractMessageHandler {
 
     private final ScenarioExecutor scenarioExecutor;
     private final ObjectMapper mapper;
-    private final CacheAdapter cacheAdapter;
 
     @Autowired
     public MessageToSkillHandler(
             ScenarioExecutor scenarioExecutor,
-            ObjectMapper mapper,
-            CacheAdapter cacheAdapter) {
+            ObjectMapper mapper) {
         this.scenarioExecutor = scenarioExecutor;
         this.mapper = mapper;
-        this.cacheAdapter = cacheAdapter;
     }
 
     public Mono<OutgoingMessage> handle(JsonNode incomingMessage) throws JsonProcessingException {
@@ -35,12 +30,12 @@ public class MessageToSkillHandler extends AbstractMessageHandler {
     }
 
     @Override
-    MessageToSkillDTO convert(JsonNode incomingMessage) throws JsonProcessingException {
-        return mapper.readValue(mapper.writeValueAsString(incomingMessage), MessageToSkillDTO.class);
+    MessageToSkillDto convert(JsonNode incomingMessage) throws JsonProcessingException {
+        return mapper.readValue(mapper.writeValueAsString(incomingMessage), MessageToSkillDto.class);
     }
 
     private ScenarioContext buildScenarioContext(JsonNode incomingMessage) throws JsonProcessingException {
-        MessageToSkillDTO dto = convert(incomingMessage);
+        MessageToSkillDto dto = convert(incomingMessage);
         return new ScenarioContext(dto.getPayload().getIntent(), dto);
     }
 }

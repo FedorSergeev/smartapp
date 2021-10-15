@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UuidDTO {
+public class UuidDto {
 
     /**
      * Идентификатор, который используется для определения не аутентифицированных пользователей.

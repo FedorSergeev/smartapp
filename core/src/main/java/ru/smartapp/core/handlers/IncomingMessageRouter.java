@@ -11,11 +11,7 @@ import reactor.core.publisher.Mono;
 import ru.smartapp.core.answersbuilders.ErrorMessageBuilder;
 import ru.smartapp.core.common.AppErrorCodes;
 import ru.smartapp.core.common.MessageName;
-import ru.smartapp.core.common.dto.incoming.CloseAppDTO;
-import ru.smartapp.core.common.dto.incoming.MessageToSkillDTO;
-import ru.smartapp.core.common.dto.incoming.RunAppDTO;
-import ru.smartapp.core.common.dto.incoming.ServerActionDTO;
-import ru.smartapp.core.common.dto.outgoing.ErrorDTO;
+import ru.smartapp.core.common.dto.outgoing.ErrorDto;
 import ru.smartapp.core.common.dto.outgoing.OutgoingMessage;
 
 import javax.annotation.PostConstruct;
@@ -28,17 +24,17 @@ import java.util.Map;
 public class IncomingMessageRouter {
     private static final String MESSAGE_NAME = "messageName";
     private final Map<MessageName, MessageHandler> incomingMessageMap;
-    private final MessageToSkillHandler<MessageToSkillDTO> messageToSkillHandler;
-    private final CloseAppHandler<CloseAppDTO> closeAppHandler;
-    private final RunAppHandler<RunAppDTO> runAppHandler;
-    private final ServerActionHandler<ServerActionDTO> serverActionHandler;
+    private final MessageToSkillHandler messageToSkillHandler;
+    private final CloseAppHandler closeAppHandler;
+    private final RunAppHandler runAppHandler;
+    private final ServerActionHandler serverActionHandler;
 
     @Autowired
     public IncomingMessageRouter(
-            MessageToSkillHandler<MessageToSkillDTO> messageToSkillHandler,
-            CloseAppHandler<CloseAppDTO> closeAppHandler,
-            RunAppHandler<RunAppDTO> runAppHandler,
-            ServerActionHandler<ServerActionDTO> serverActionHandler
+            MessageToSkillHandler messageToSkillHandler,
+            CloseAppHandler closeAppHandler,
+            RunAppHandler runAppHandler,
+            ServerActionHandler serverActionHandler
     ) {
         this.messageToSkillHandler = messageToSkillHandler;
         this.closeAppHandler = closeAppHandler;
@@ -61,12 +57,12 @@ public class IncomingMessageRouter {
             return false;
         }
         if (!incomingMessage.hasNonNull(MESSAGE_NAME)) {
-            log.error("Key 'messageName' must not be empty");
+            log.error(String.format("Key '%s' must not be empty", MESSAGE_NAME));
             return false;
         }
         JsonNode messageNameNode = incomingMessage.get(MESSAGE_NAME);
         if (!messageNameNode.isTextual()) {
-            log.error(String.format("Key's 'messageName' value must be textual, got: %s", messageNameNode));
+            log.error(String.format("Key's '%s' value must be textual, got: %s", MESSAGE_NAME, messageNameNode));
             return false;
         }
         String messageNameString = messageNameNode.asText();
@@ -90,7 +86,7 @@ public class IncomingMessageRouter {
 
     public Mono<OutgoingMessage> handle(JsonNode incomingMessage) throws JsonProcessingException {
         if (!validateIncomingMessage(incomingMessage)) {
-            ErrorDTO errorDTO = new ErrorMessageBuilder().build(AppErrorCodes.ERROR.getCode(), "", null);
+            ErrorDto errorDTO = new ErrorMessageBuilder().build(AppErrorCodes.ERROR.getCode(), "", null);
             return Mono.just(errorDTO);
         }
         return getIncomingMessageHandler(incomingMessage).handle(incomingMessage);

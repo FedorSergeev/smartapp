@@ -9,7 +9,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class CharacterDTO {
+public class CharacterDto {
     /**
      * Идентификатор персонажа, которого выбрал пользователь.
      * <p>

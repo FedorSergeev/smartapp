@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class AbstractMessage implements Message {
+public abstract class AbstractMessage {
 
     @JsonProperty("messageId")
     private Long messageId;
@@ -19,6 +19,6 @@ public abstract class AbstractMessage implements Message {
     private String messageName;
 
     @JsonProperty("uuid")
-    private UuidDTO uuidDTO;
+    private UuidDto uuidDTO;
 
 }

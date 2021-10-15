@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
-import ru.smartapp.core.common.dto.CharacterDTO;
-import ru.smartapp.core.common.dto.DeviceDTO;
+import ru.smartapp.core.common.dto.CharacterDto;
+import ru.smartapp.core.common.dto.DeviceDto;
 
 /**
  * Когда пользователь произносит команду для остановки приложения,
@@ -14,19 +14,19 @@ import ru.smartapp.core.common.dto.DeviceDTO;
  */
 @Getter
 @Setter
-public class CloseAppDTO extends AbstractIncomingMessage {
+public class CloseAppDto extends AbstractIncomingMessage<CloseAppPayloadDto> {
     @JsonProperty("payload")
-    private CloseAppPayloadDTO payload;
+    private CloseAppPayloadDto payload;
 
     @Nullable
     @Override
-    public DeviceDTO getDeviceDTO() {
+    public DeviceDto getDeviceDto() {
         return payload.getDevice();
     }
 
     @Nullable
     @Override
-    public CharacterDTO getCharacterDTO() {
+    public CharacterDto getCharacterDto() {
         return payload.getCharacter();
     }
 }

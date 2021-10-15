@@ -15,7 +15,7 @@ import ru.smartapp.core.answersbuilders.NothingFoundMessageBuilder;
 import ru.smartapp.core.answersbuilders.sdkanswerbuilder.SdkAnswerBuilder;
 import ru.smartapp.core.answersbuilders.sdkanswerbuilder.SdkAnswerService;
 import ru.smartapp.core.common.dto.incoming.AbstractIncomingMessage;
-import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
+import ru.smartapp.core.common.dto.outgoing.OutgoingMessage;
 import ru.smartapp.core.common.integrationdto.ServiceConfig;
 import ru.smartapp.core.common.model.ScenarioContext;
 
@@ -42,7 +42,7 @@ public class HowSaveForRetirementScenario implements Scenario {
     }
 
     @Override
-    public Mono<AbstractOutgoingMessage> run(ScenarioContext context) throws JsonProcessingException {
+    public Mono<OutgoingMessage> run(ScenarioContext context) throws JsonProcessingException {
         ServiceConfig serviceConfig = appConfigsService.getIntegrationAppConfig().getServices().getServiceOne();
         // TODO: how use without creating new WebClient on different hosts
         WebClient webClient = WebClient.create(serviceConfig.getHost());

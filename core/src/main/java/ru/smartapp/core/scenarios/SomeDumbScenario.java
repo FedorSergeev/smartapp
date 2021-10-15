@@ -12,23 +12,22 @@ import ru.smartapp.core.answersbuilders.sdkanswerbuilder.SdkAnswerBuilder;
 import ru.smartapp.core.answersbuilders.sdkanswerbuilder.SdkAnswerService;
 import ru.smartapp.core.common.dto.incoming.AbstractIncomingMessage;
 import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
+import ru.smartapp.core.common.dto.outgoing.OutgoingMessage;
 import ru.smartapp.core.common.model.ScenarioContext;
 
 @Slf4j
 @Service
 @ScenarioClass("run_app")
 public class SomeDumbScenario implements Scenario {
-    private final ObjectMapper mapper;
     private final SdkAnswerService sdkAnswerService;
 
     @Autowired
-    public SomeDumbScenario(ObjectMapper mapper, SdkAnswerService sdkAnswerService) {
-        this.mapper = mapper;
+    public SomeDumbScenario(SdkAnswerService sdkAnswerService) {
         this.sdkAnswerService = sdkAnswerService;
     }
 
     @Override
-    public Mono<AbstractOutgoingMessage> run(ScenarioContext context) throws JsonProcessingException {
+    public Mono<OutgoingMessage> run(ScenarioContext context) throws JsonProcessingException {
         String stateId = context.getStateId();
         if (stateId == null) {
             return hello(context);
@@ -36,7 +35,7 @@ public class SomeDumbScenario implements Scenario {
         return bye(context);
     }
 
-    private Mono<AbstractOutgoingMessage> hello(ScenarioContext context) throws JsonProcessingException {
+    private Mono<OutgoingMessage> hello(ScenarioContext context) throws JsonProcessingException {
         AbstractIncomingMessage incomingMessage = context.getMessage();
         SdkAnswerBuilder answerBuilder = sdkAnswerService.getSdkAnswerBuilder();
         answerBuilder
@@ -49,7 +48,7 @@ public class SomeDumbScenario implements Scenario {
         return Mono.just(new AnswerToUserMessageBuilder().build(answerBuilder, incomingMessage));
     }
 
-    private Mono<AbstractOutgoingMessage> bye(ScenarioContext context) throws JsonProcessingException {
+    private Mono<OutgoingMessage> bye(ScenarioContext context) throws JsonProcessingException {
         AbstractIncomingMessage incomingMessage = context.getMessage();
         SdkAnswerBuilder answerBuilder = sdkAnswerService.getSdkAnswerBuilder();
         answerBuilder

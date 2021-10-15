@@ -5,22 +5,22 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
-import ru.smartapp.core.common.dto.AppInfoDTO;
-import ru.smartapp.core.common.dto.CharacterDTO;
-import ru.smartapp.core.common.dto.DeviceDTO;
+import ru.smartapp.core.common.dto.AppInfoDto;
+import ru.smartapp.core.common.dto.CharacterDto;
+import ru.smartapp.core.common.dto.DeviceDto;
 
 /**
- * @see {@link MessageToSkillPayloadDTO}
+ * @see {@link MessageToSkillPayloadDto}
  */
 @Getter
 @Setter
-public class CloseAppPayloadDTO implements Payload {
+public class CloseAppPayloadDto implements Payload {
     @JsonProperty("applicationId")
     private String applicationId;
     @JsonProperty("appversionId")
     private String appVersionId;
     @JsonProperty("app_info")
-    private AppInfoDTO appInfo;
+    private AppInfoDto appInfo;
     @JsonProperty("intent")
     private String intent;
     @JsonProperty("original_intent")
@@ -37,12 +37,12 @@ public class CloseAppPayloadDTO implements Payload {
     @JsonProperty("selected_item")
     private JsonNode selectedItem;
     @JsonProperty("device")
-    private DeviceDTO device;
+    private DeviceDto device;
     @Nullable
     @JsonProperty("new_session")
     private Boolean newSession;
     @JsonProperty("character")
-    private CharacterDTO character;
+    private CharacterDto character;
     @JsonProperty("strategies")
     private JsonNode strategies;
     @JsonProperty("annotations")

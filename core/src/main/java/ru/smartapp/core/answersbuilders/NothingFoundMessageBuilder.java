@@ -2,14 +2,14 @@ package ru.smartapp.core.answersbuilders;
 
 import ru.smartapp.core.common.MessageName;
 import ru.smartapp.core.common.dto.incoming.AbstractIncomingMessage;
-import ru.smartapp.core.common.dto.outgoing.NothingFoundDTO;
-import ru.smartapp.core.common.dto.outgoing.NothingFoundPayloadDTO;
+import ru.smartapp.core.common.dto.outgoing.NothingFoundDto;
+import ru.smartapp.core.common.dto.outgoing.NothingFoundPayloadDto;
 
 public class NothingFoundMessageBuilder implements AnswerBuilder {
-    public NothingFoundDTO build(AbstractIncomingMessage incomingMessage) {
-        NothingFoundDTO nothingFoundDTO = new NothingFoundDTO();
-        NothingFoundPayloadDTO nothingFoundPayloadDTO = new NothingFoundPayloadDTO();
-        nothingFoundPayloadDTO.setDevice(incomingMessage.getDeviceDTO());
+    public NothingFoundDto build(AbstractIncomingMessage incomingMessage) {
+        NothingFoundDto nothingFoundDTO = new NothingFoundDto();
+        NothingFoundPayloadDto nothingFoundPayloadDTO = new NothingFoundPayloadDto();
+        nothingFoundPayloadDTO.setDevice(incomingMessage.getDeviceDto());
         nothingFoundDTO.setMessageId(incomingMessage.getMessageId());
         nothingFoundDTO.setMessageName(MessageName.NOTHING_FOUND.name());
         nothingFoundDTO.setSessionId(incomingMessage.getSessionId());

@@ -4,14 +4,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.jetbrains.annotations.NotNull;
 import ru.smartapp.core.common.MessageName;
 import ru.smartapp.core.common.dto.incoming.AbstractIncomingMessage;
-import ru.smartapp.core.common.dto.outgoing.PolicyRunAppDTO;
-import ru.smartapp.core.common.dto.outgoing.PolicyRunAppPayloadDTO;
+import ru.smartapp.core.common.dto.outgoing.PolicyRunAppDto;
+import ru.smartapp.core.common.dto.outgoing.PolicyRunAppPayloadDto;
 
 public class PolicyRunAppMessageBuilder implements AnswerBuilder {
-    public PolicyRunAppDTO build(@NotNull String projectName, @NotNull JsonNode serverAction, AbstractIncomingMessage incomingMessage) {
-        PolicyRunAppDTO policyRunAppDTO = new PolicyRunAppDTO();
-        PolicyRunAppPayloadDTO policyRunAppPayloadDTO = new PolicyRunAppPayloadDTO();
-        policyRunAppPayloadDTO.setDevice(incomingMessage.getDeviceDTO());
+    public PolicyRunAppDto build(@NotNull String projectName, @NotNull JsonNode serverAction, AbstractIncomingMessage incomingMessage) {
+        PolicyRunAppDto policyRunAppDTO = new PolicyRunAppDto();
+        PolicyRunAppPayloadDto policyRunAppPayloadDTO = new PolicyRunAppPayloadDto();
+        policyRunAppPayloadDTO.setDevice(incomingMessage.getDeviceDto());
         policyRunAppPayloadDTO.setProjectName(projectName);
         policyRunAppPayloadDTO.setServerAction(serverAction);
 

@@ -10,8 +10,8 @@ import reactor.core.publisher.Mono;
 import ru.smartapp.core.answersbuilders.NothingFoundMessageBuilder;
 import ru.smartapp.core.cache.CacheAdapter;
 import ru.smartapp.core.common.dao.UserScenarioDAO;
-import ru.smartapp.core.common.dto.outgoing.AnswerToUserDTO;
-import ru.smartapp.core.common.dto.outgoing.NothingFoundDTO;
+import ru.smartapp.core.common.dto.outgoing.AnswerToUserDto;
+import ru.smartapp.core.common.dto.outgoing.NothingFoundDto;
 import ru.smartapp.core.common.dto.outgoing.OutgoingMessage;
 import ru.smartapp.core.common.model.ScenarioContext;
 import ru.smartapp.core.scenarios.Scenario;
@@ -49,7 +49,7 @@ public class ScenarioExecutor {
         Class<? extends Scenario> scenarioClass = scenarioMap.get(intent);
         if (scenarioClass == null) {
             log.error(String.format("There is no scenario with id %s", intent));
-            NothingFoundDTO nothingFoundDTO = new NothingFoundMessageBuilder().build(scenarioContext.getMessage());
+            NothingFoundDto nothingFoundDTO = new NothingFoundMessageBuilder().build(scenarioContext.getMessage());
             return Mono.just(nothingFoundDTO);
         }
         Scenario scenario = context.getBean(scenarioClass);
@@ -72,10 +72,10 @@ public class ScenarioExecutor {
     }
 
     private boolean isFinished(OutgoingMessage outgoingMessage) {
-        if (outgoingMessage instanceof AnswerToUserDTO) {
-            AnswerToUserDTO answerToUserDTO = (AnswerToUserDTO) outgoingMessage;
+        if (outgoingMessage instanceof AnswerToUserDto) {
+            AnswerToUserDto answerToUserDTO = (AnswerToUserDto) outgoingMessage;
             return Optional.of(answerToUserDTO)
-                    .map(AnswerToUserDTO::getPayload)
+                    .map(AnswerToUserDto::getPayload)
                     .filter(json -> json.hasNonNull("finished"))
                     .map(json -> json.get("finished").asBoolean())
                     .orElse(true);

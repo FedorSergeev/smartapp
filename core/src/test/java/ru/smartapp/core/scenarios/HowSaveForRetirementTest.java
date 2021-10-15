@@ -7,9 +7,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import ru.smartapp.core.common.MessageName;
-import ru.smartapp.core.common.dto.incoming.MessageToSkillDTO;
+import ru.smartapp.core.common.dto.incoming.MessageToSkillDto;
 import ru.smartapp.core.common.dto.outgoing.AbstractOutgoingMessage;
-import ru.smartapp.core.common.dto.outgoing.AnswerToUserDTO;
+import ru.smartapp.core.common.dto.outgoing.AnswerToUserDto;
+import ru.smartapp.core.common.dto.outgoing.OutgoingMessage;
 import ru.smartapp.core.common.model.ScenarioContext;
 
 import java.io.IOException;
@@ -28,19 +29,21 @@ public class HowSaveForRetirementTest {
 
     @Test
     public void testMessage() throws IOException {
-        MessageToSkillDTO dto = mapper.readValue(messageToSkillResource.getInputStream(), MessageToSkillDTO.class);
+        MessageToSkillDto dto = mapper.readValue(messageToSkillResource.getInputStream(), MessageToSkillDto.class);
         dto.getPayload().setIntent("how_to_save_for_retirement");
         ScenarioContext context = new ScenarioContext(dto.getPayload().getIntent(), dto);
-        AbstractOutgoingMessage answer = howSaveForRetirementScenario.run(context).block();
+        OutgoingMessage answer = howSaveForRetirementScenario.run(context).block();
         assertNotNull(answer);
-        assertEquals(MessageName.ANSWER_TO_USER.name(), answer.getMessageName());
-        assertEquals(dto.getSessionId(), answer.getSessionId());
-        assertEquals(dto.getMessageId(), answer.getMessageId());
-        assertEquals(dto.getUuidDTO().getSub(), answer.getUuidDTO().getSub());
-        assertEquals(dto.getUuidDTO().getUserChannel(), answer.getUuidDTO().getUserChannel());
-        assertEquals(dto.getUuidDTO().getUserId(), answer.getUuidDTO().getUserId());
+        assertTrue((answer instanceof AbstractOutgoingMessage));
+        AbstractOutgoingMessage abstractOutgoingMessage = (AbstractOutgoingMessage) answer;
+        assertEquals(MessageName.ANSWER_TO_USER.name(), abstractOutgoingMessage.getMessageName());
+        assertEquals(dto.getSessionId(), abstractOutgoingMessage.getSessionId());
+        assertEquals(dto.getMessageId(), abstractOutgoingMessage.getMessageId());
+        assertEquals(dto.getUuidDTO().getSub(), abstractOutgoingMessage.getUuidDTO().getSub());
+        assertEquals(dto.getUuidDTO().getUserChannel(), abstractOutgoingMessage.getUuidDTO().getUserChannel());
+        assertEquals(dto.getUuidDTO().getUserId(), abstractOutgoingMessage.getUuidDTO().getUserId());
         assertNull(context.getStateId());
-        AnswerToUserDTO answerToUserDTO = (AnswerToUserDTO) answer;
+        AnswerToUserDto answerToUserDTO = (AnswerToUserDto) abstractOutgoingMessage;
         assertTrue(answerToUserDTO.getPayload().get("finished").asBoolean());
         String pronounceText = answerToUserDTO.getPayload().get("pronounceText").asText();
         assertNotNull(pronounceText);

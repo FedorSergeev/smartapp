@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
-import ru.smartapp.core.common.dto.DeviceDTO;
+import ru.smartapp.core.common.dto.DeviceDto;
 
 @Getter
 @Setter
-public class ErrorPayloadDTO {
+public class ErrorPayloadDto {
     /**
      * Код ошибки
      */
@@ -27,5 +27,5 @@ public class ErrorPayloadDTO {
     @JsonProperty("intent")
     private String intent;
     @JsonProperty("device")
-    private DeviceDTO device;
+    private DeviceDto device;
 }
