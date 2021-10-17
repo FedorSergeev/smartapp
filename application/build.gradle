@@ -13,16 +13,9 @@ group 'ru.smaprtapp'
 version '1.0-SNAPSHOT'
 description = "application"
 
-sourceCompatibility = 8
-targetCompatibility = 8
-
 repositories {
     mavenCentral()
     mavenLocal()
-}
-
-ext {
-    set('tag', getTag())
 }
 
 dependencies {
@@ -49,20 +42,14 @@ test {
 
 docker {
     dependsOn build
-    name "docker:5000/fed/${project.name}:${tag}"
+    name "docker:5000/fed/${project.name}:${version}"
     files 'build/libs/application-1.0-SNAPSHOT.jar'
     buildArgs(['JAR_FILE': "${bootJar.archiveFileName.get()}"])
 }
 
 dockerRun {
     name "${project.name}"
-    image "docker:5000/fed/${project.name}:${tag}"
+    image "docker:5000/fed/${project.name}:${version}"
     ports '8080:8087'
     clean true
-}
-
-def getTag() {
-    return versionDetails().branchName == null
-            ? version
-            : versionDetails().branchName.replace('/', '-')
 }
