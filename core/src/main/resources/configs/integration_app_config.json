@@ -1,0 +1,18 @@
+{
+  "services": {
+    "service_one": {
+      "name": "get_one",
+      "host": "google.com",
+      "endpoint": "/",
+      "port": null,
+      "timeout": 1.0
+    },
+    "service_two": {
+      "name": "post_two",
+      "host": "",
+      "endpoint": "/some_endpoint_2",
+      "port": "",
+      "timeout": 1.0
+    }
+  }
+}

@@ -16,12 +16,12 @@ public class SdkAnswerBuilder {
     public static final String SUGGESTION_TEXT_TEMPLATE_FIELD_NAME = "suggestion_text_template";
     public static final String SUGGESTION_DEEPLINK_TEMPLATE_FIELD_NAME = "suggestion_deeplink_template";
 
-    private ObjectMapper mapper;
-    private ObjectNode sdkAnswerTemplate;
-    private ObjectNode multilineCardTemplate;
-    private ObjectNode bubbleTemplate;
-    private ObjectNode suggestionTextTemplate;
-    private ObjectNode suggestionDeeplinkTemplate;
+    private final ObjectMapper mapper;
+    private final ObjectNode sdkAnswerTemplate;
+    private final ObjectNode multilineCardTemplate;
+    private final ObjectNode bubbleTemplate;
+    private final ObjectNode suggestionTextTemplate;
+    private final ObjectNode suggestionDeeplinkTemplate;
 
     public SdkAnswerBuilder(ObjectNode answerTemplates, ObjectMapper mapper) {
         this.mapper = mapper;

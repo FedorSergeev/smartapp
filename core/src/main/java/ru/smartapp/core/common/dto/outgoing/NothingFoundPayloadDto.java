@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
-import ru.smartapp.core.common.dto.DeviceDTO;
+import ru.smartapp.core.common.dto.DeviceDto;
 
 @Getter
 @Setter
-public class NothingFoundPayloadDTO {
+public class NothingFoundPayloadDto {
     @JsonProperty("device")
-    private DeviceDTO device;
+    private DeviceDto device;
     /**
      * Интент, который смартап получит в следующем ответе ассистента.
      */

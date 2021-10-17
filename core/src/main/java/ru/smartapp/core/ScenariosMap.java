@@ -12,7 +12,7 @@ import java.util.Map;
 @Service
 @ScenarioClassMap
 public class ScenariosMap {
-    private Map<String, Class<? extends Scenario>> scenarioMap = new HashMap<>();
+    private final Map<String, Class<? extends Scenario>> scenarioMap = new HashMap<>();
 
     @Nullable
     public Class<? extends Scenario> get(String scenarioId) {

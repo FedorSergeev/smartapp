@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ErrorDTO extends AbstractOutgoingMessage {
+public class PolicyRunAppDto extends AbstractOutgoingMessage {
     @JsonProperty("payload")
-    private ErrorPayloadDTO payload;
+    private PolicyRunAppPayloadDto payload;
 }
