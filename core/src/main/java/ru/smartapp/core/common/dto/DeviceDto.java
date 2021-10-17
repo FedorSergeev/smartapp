@@ -11,7 +11,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class DeviceDTO {
+public class DeviceDto {
     /**
      * Операционная система устройства.
      * ANDROID/IOS

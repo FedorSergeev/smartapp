@@ -21,8 +21,8 @@ public class ScenariosTextsService {
     @Value("classpath*:scenario_texts/*.*")
     private Resource[] scenarioTextsResources;
     @Getter
-    private Map<String, JsonNode> textMap = new HashMap<>();
-    private ObjectMapper mapper;
+    private final Map<String, JsonNode> textMap = new HashMap<>();
+    private final ObjectMapper mapper;
 
     @Autowired
     public ScenariosTextsService(ObjectMapper mapper) {

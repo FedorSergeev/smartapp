@@ -9,7 +9,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class AppInfoDTO {
+public class AppInfoDto {
     /**
      * Идентификатор проекта в SmartMarket Studio.
      */

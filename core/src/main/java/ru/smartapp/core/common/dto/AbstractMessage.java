@@ -19,6 +19,6 @@ public abstract class AbstractMessage implements Message {
     private String messageName;
 
     @JsonProperty("uuid")
-    private UuidDTO uuidDTO;
+    private UuidDto uuidDTO;
 
 }

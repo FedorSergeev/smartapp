@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
-import ru.smartapp.core.common.dto.incoming.MessageToSkillDTO;
+import ru.smartapp.core.common.dto.incoming.MessageToSkillDto;
 import ru.smartapp.core.common.dto.outgoing.OutgoingMessage;
 import ru.smartapp.core.common.model.ScenarioContext;
 
@@ -30,7 +30,7 @@ public class ScenarioExecutorTest {
 
     @Test
     public void testSomeDumbScenario() throws IOException {
-        MessageToSkillDTO message = getMessage();
+        MessageToSkillDto message = getMessage();
         ScenarioContext scenarioContext = new ScenarioContext(message.getPayload().getIntent(), message);
         OutgoingMessage answer = scenarioExecutor.run(scenarioContext).block();
 
@@ -52,15 +52,15 @@ public class ScenarioExecutorTest {
 
     @Test
     public void test() throws IOException {
-        MessageToSkillDTO message = getMessage();
+        MessageToSkillDto message = getMessage();
         OutgoingMessage answer =
                 scenarioExecutor.run(new ScenarioContext(message.getPayload().getIntent(), message)).block();
         JsonNode response = mapper.readTree(mapper.writeValueAsString(answer));
         assertNotNull(response);
     }
 
-    private MessageToSkillDTO getMessage() throws IOException {
+    private MessageToSkillDto getMessage() throws IOException {
         JsonNode requestJson = mapper.readTree(messageToSkillResource.getInputStream());
-        return mapper.readValue(mapper.writeValueAsString(requestJson), MessageToSkillDTO.class);
+        return mapper.readValue(mapper.writeValueAsString(requestJson), MessageToSkillDto.class);
     }
 }

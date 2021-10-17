@@ -9,7 +9,9 @@ import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorResourceFactory;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.resources.LoopResources;
+
 
 import java.util.Collections;
 
@@ -32,7 +34,6 @@ public class Config {
         return cacheManager;
     }
 
-
     /**
      * Customizes Netty server
      *
@@ -47,6 +48,12 @@ public class Config {
         factory.setResourceFactory(resourceFactory);
 
         return factory;
+    }
+  
+    @Bean
+    public WebClient getWebClient() {
+        return WebClient.create();
+
     }
 
 }

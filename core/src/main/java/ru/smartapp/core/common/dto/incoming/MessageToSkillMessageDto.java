@@ -10,7 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class MessageToSkillMessageDTO {
+public class MessageToSkillMessageDto {
     /**
      * Исходное сообщение пользователя: распознанный голос или введенный текст.
      * В случае распознанного голоса предоставляется текст запроса без нормализации числительных и другого,

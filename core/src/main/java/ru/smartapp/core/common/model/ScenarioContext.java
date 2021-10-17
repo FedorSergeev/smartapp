@@ -8,10 +8,11 @@ import ru.smartapp.core.cache.CacheAdapter;
 import ru.smartapp.core.common.Character;
 import ru.smartapp.core.common.dao.ScenarioDataDAO;
 import ru.smartapp.core.common.dao.UserScenarioDAO;
-import ru.smartapp.core.common.dto.CharacterDTO;
-import ru.smartapp.core.common.dto.incoming.AbstractIncomingMessage;
-import ru.smartapp.core.common.dto.incoming.MessageToSkillDTO;
-import ru.smartapp.core.common.dto.incoming.MessageToSkillPayloadDTO;
+import ru.smartapp.core.common.dto.CharacterDto;
+import ru.smartapp.core.common.dto.incoming.IncomingMessage;
+import ru.smartapp.core.common.dto.incoming.MessageToSkillDto;
+import ru.smartapp.core.common.dto.incoming.MessageToSkillPayloadDto;
+import ru.smartapp.core.common.dto.incoming.Payload;
 import ru.smartapp.core.config.SpringContext;
 
 import java.util.Arrays;
@@ -28,11 +29,11 @@ public class ScenarioContext {
     private String stateId;
     @Nullable
     private ScenarioDataDAO scenarioData;
-    private AbstractIncomingMessage message;
+    private IncomingMessage message;
 
     public ScenarioContext(
             String intent,
-            AbstractIncomingMessage message
+            IncomingMessage message
     ) {
         this.user = new User(message);
         this.intent = intent;
@@ -55,16 +56,16 @@ public class ScenarioContext {
         return SpringContext.getBean(CacheAdapter.class);
     }
 
-    private boolean isNewSession(AbstractIncomingMessage message) {
-        if (message instanceof MessageToSkillDTO) {
-            MessageToSkillDTO messageToSkillDTO = (MessageToSkillDTO) message;
-            return Optional.of(messageToSkillDTO).map(MessageToSkillDTO::getPayload).map(MessageToSkillPayloadDTO::getNewSession).orElse(false);
+    private boolean isNewSession(IncomingMessage<? extends Payload> message) {
+        if (message instanceof MessageToSkillDto) {
+            MessageToSkillDto messageToSkillDTO = (MessageToSkillDto) message;
+            return Optional.of(messageToSkillDTO).map(MessageToSkillDto::getPayload).map(MessageToSkillPayloadDto::getNewSession).orElse(false);
         }
         return false;
     }
 
-    private Character getCharacterFromMessage(AbstractIncomingMessage message) {
-        Optional<String> optionalCharacterId = Optional.ofNullable(message.getCharacterDTO()).map(CharacterDTO::getId);
+    private <T extends Payload> Character getCharacterFromMessage(IncomingMessage<T> message) {
+        Optional<String> optionalCharacterId = Optional.ofNullable(message.getCharacterDto()).map(CharacterDto::getId);
         if (!optionalCharacterId.isPresent()) {
             log.warn(String.format("Expected character ids: %s, got null", Arrays.toString(Character.values())));
         }

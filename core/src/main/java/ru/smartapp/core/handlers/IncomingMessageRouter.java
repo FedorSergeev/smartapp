@@ -2,7 +2,6 @@ package ru.smartapp.core.handlers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,8 +11,7 @@ import reactor.core.publisher.Mono;
 import ru.smartapp.core.answersbuilders.ErrorMessageBuilder;
 import ru.smartapp.core.common.AppErrorCodes;
 import ru.smartapp.core.common.MessageName;
-import ru.smartapp.core.common.dto.incoming.*;
-import ru.smartapp.core.common.dto.outgoing.ErrorDTO;
+import ru.smartapp.core.common.dto.outgoing.ErrorDto;
 import ru.smartapp.core.common.dto.outgoing.OutgoingMessage;
 
 import javax.annotation.PostConstruct;
@@ -24,22 +22,20 @@ import java.util.Map;
 @Slf4j
 @Service
 public class IncomingMessageRouter {
-    private Map<MessageName, MessageHandler<? extends AbstractIncomingMessage>> incomingMessageMap;
-    private ObjectMapper mapper;
-    private MessageToSkillHandler<MessageToSkillDTO> messageToSkillHandler;
-    private CloseAppHandler<CloseAppDTO> closeAppHandler;
-    private RunAppHandler<RunAppDTO> runAppHandler;
-    private ServerActionHandler<ServerActionDTO> serverActionHandler;
+    private static final String MESSAGE_NAME = "messageName";
+    private final Map<MessageName, MessageHandler> incomingMessageMap;
+    private final MessageToSkillHandler messageToSkillHandler;
+    private final CloseAppHandler closeAppHandler;
+    private final RunAppHandler runAppHandler;
+    private final ServerActionHandler serverActionHandler;
 
     @Autowired
     public IncomingMessageRouter(
-            ObjectMapper mapper,
-            MessageToSkillHandler<MessageToSkillDTO> messageToSkillHandler,
-            CloseAppHandler<CloseAppDTO> closeAppHandler,
-            RunAppHandler<RunAppDTO> runAppHandler,
-            ServerActionHandler<ServerActionDTO> serverActionHandler
+            MessageToSkillHandler messageToSkillHandler,
+            CloseAppHandler closeAppHandler,
+            RunAppHandler runAppHandler,
+            ServerActionHandler serverActionHandler
     ) {
-        this.mapper = mapper;
         this.messageToSkillHandler = messageToSkillHandler;
         this.closeAppHandler = closeAppHandler;
         this.runAppHandler = runAppHandler;
@@ -60,13 +56,13 @@ public class IncomingMessageRouter {
             log.error("Incoming message must not be null");
             return false;
         }
-        if (!incomingMessage.hasNonNull("messageName")) {
-            log.error("Key 'messageName' must not be empty");
+        if (!incomingMessage.hasNonNull(MESSAGE_NAME)) {
+            log.error(String.format("Key '%s' must not be empty", MESSAGE_NAME));
             return false;
         }
-        JsonNode messageNameNode = incomingMessage.get("messageName");
+        JsonNode messageNameNode = incomingMessage.get(MESSAGE_NAME);
         if (!messageNameNode.isTextual()) {
-            log.error(String.format("Key's 'messageName' value must be textual, got: %s", messageNameNode));
+            log.error(String.format("Key's '%s' value must be textual, got: %s", MESSAGE_NAME, messageNameNode));
             return false;
         }
         String messageNameString = messageNameNode.asText();
@@ -83,15 +79,14 @@ public class IncomingMessageRouter {
         return true;
     }
 
-    public MessageHandler<? extends AbstractIncomingMessage>
-    getIncomingMessageHandler(@NotNull JsonNode incomingMessage) {
-        MessageName messageName = MessageName.valueOf(incomingMessage.get("messageName").asText());
+    public MessageHandler getIncomingMessageHandler(@NotNull JsonNode incomingMessage) {
+        MessageName messageName = MessageName.valueOf(incomingMessage.get(MESSAGE_NAME).asText());
         return incomingMessageMap.get(messageName);
     }
 
     public Mono<OutgoingMessage> handle(JsonNode incomingMessage) throws JsonProcessingException {
         if (!validateIncomingMessage(incomingMessage)) {
-            ErrorDTO errorDTO = new ErrorMessageBuilder().build(AppErrorCodes.ERROR.getCode(), "", null);
+            ErrorDto errorDTO = new ErrorMessageBuilder().build(AppErrorCodes.ERROR.getCode(), "", null);
             return Mono.just(errorDTO);
         }
         return getIncomingMessageHandler(incomingMessage).handle(incomingMessage);

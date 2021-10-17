@@ -5,19 +5,19 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
-import ru.smartapp.core.common.dto.AppInfoDTO;
-import ru.smartapp.core.common.dto.CharacterDTO;
-import ru.smartapp.core.common.dto.DeviceDTO;
+import ru.smartapp.core.common.dto.AppInfoDto;
+import ru.smartapp.core.common.dto.CharacterDto;
+import ru.smartapp.core.common.dto.DeviceDto;
 
 @Getter
 @Setter
-public class MessageToSkillPayloadDTO {
+public class MessageToSkillPayloadDto implements Payload {
     @JsonProperty("applicationId")
     private String applicationId;
     @JsonProperty("appversionId")
     private String appVersionId;
     @JsonProperty("app_info")
-    private AppInfoDTO appInfo;
+    private AppInfoDto appInfo;
     @JsonProperty("intent")
     private String intent;
     @JsonProperty("original_intent")
@@ -42,7 +42,7 @@ public class MessageToSkillPayloadDTO {
     @JsonProperty("selected_item")
     private JsonNode selectedItem;
     @JsonProperty("device")
-    private DeviceDTO device;
+    private DeviceDto device;
     /**
      * Указывает на характер запуска смартапа. Если поле содержит true, сессии присваивается новый идентификатор (поле sessionId).
      * Возможные значения:
@@ -57,7 +57,7 @@ public class MessageToSkillPayloadDTO {
     @JsonProperty("new_session")
     private Boolean newSession;
     @JsonProperty("character")
-    private CharacterDTO character;
+    private CharacterDto character;
     /**
      * Возможные стратегии смартапа.
      */
@@ -72,7 +72,7 @@ public class MessageToSkillPayloadDTO {
      * Результат предобработки.
      */
     @JsonProperty("message")
-    private MessageToSkillMessageDTO message;
+    private MessageToSkillMessageDto message;
     @JsonProperty("client_profile")
     private JsonNode clientProfile;
     @JsonProperty("asr")
